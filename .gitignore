@@ -6,4 +6,4 @@ reports/*.xml
 package.json
 package-lock.json
 slask.js
-master.db
+bookstore.db
