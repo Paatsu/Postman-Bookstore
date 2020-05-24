@@ -5,3 +5,5 @@ reports/*.html
 reports/*.xml
 slask.js
 bookstore.db
+package-lock.json
+package.json
