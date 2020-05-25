@@ -8,3 +8,4 @@ bookstore.db
 package-lock.json
 package.json
 collections/rikard_datafile.json
+rikard_test.js
