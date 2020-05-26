@@ -1,11 +1,66 @@
 {
 	"info": {
 		"_postman_id": "51af4a7e-d04b-404e-b98b-452075e03e43",
-		"name": "2.1 Add 8 different books (linked to the different writers)",
+		"name": "2.1 Add 8 different books & link writers (datafile required)",
 		"description": "rikard_books_datafile.json required",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "GET check preconditions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a7f45f90-0db0-4be8-ab13-6f3dc9d1996b",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Halt if\r",
+							"if (!response.length || pm.info.iterationCount !== 8) { \r",
+							"    postman.setNextRequest(null);\r",
+							"};\r",
+							"\r",
+							"pm.test('Checking preconditions for this collection', function(){\r",
+							"\r",
+							"    // Just to get assertion message\r",
+							"    pm.expect(response.length).to.be.above(0, \r",
+							"    'Missing testdata. This collection requires you run \"1.1 Add 5 different writers\" first');\r",
+							"\r",
+							"    // Just to get assertion message\r",
+							"    pm.expect(pm.info.iterationCount).to.equal(8, \r",
+							"    'Missing testdata. Please use correct datafile for this collection');\r",
+							"    \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/writers/?name=Frank Herbert",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Frank Herbert"
+						}
+					]
+				}
+			},
+			"response": []
+		},
 		{
 			"name": "POST book",
 			"event": [
@@ -165,7 +220,7 @@
 			"response": []
 		},
 		{
-			"name": "GET bookXwriters by ISBN",
+			"name": "GET booksXwriters by ISBN",
 			"event": [
 				{
 					"listen": "test",
@@ -219,7 +274,7 @@
 			"response": []
 		},
 		{
-			"name": "GET bookXwriters by writer id",
+			"name": "GET booksXwriters by writer id",
 			"event": [
 				{
 					"listen": "test",
@@ -298,7 +353,7 @@
 	],
 	"variable": [
 		{
-			"id": "a8de1c6d-656d-4fe2-bb7e-d442b3a5c0d4",
+			"id": "6c7319cd-1ad2-40f2-bd27-57aca1918339",
 			"key": "collectionLastWriterID",
 			"value": "-1",
 			"type": "string"
