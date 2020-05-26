@@ -1,0 +1,308 @@
+{
+	"info": {
+		"_postman_id": "51af4a7e-d04b-404e-b98b-452075e03e43",
+		"name": "2.1 Add 8 different books (linked to the different writers)",
+		"description": "rikard_books_datafile.json required",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST book",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "dee803e8-9202-47f9-a75a-be5e711eca3a",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let title = pm.iterationData.get('title');\r",
+							"\r",
+							"pm.test('Checking response when POST book: ' + title, function(){\r",
+							"\r",
+							"    pm.expect(response.lastID).to.be.a('number', \r",
+							"    'response is missing assigned lastID');\r",
+							"    \r",
+							"    pm.expect(response.changes).to.eql(1, \r",
+							"    'expected response changes 1');\r",
+							"});\r",
+							"\r",
+							"pm.environment.set('lastBookID', response.lastID);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"ISBN_nr\": \"{{ISBN_nr}}\",\n\t\"title\": \"{{title}}\",\n\t\"description\": \"{{description}}\",\n\t\"pages\": {{pages}},\n\t\"price\": {{price}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/books/",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET writer id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a4aceb1f-637c-4799-b6f0-340df5fb2981",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let writer = pm.iterationData.get('writer');\r",
+							"\r",
+							"pm.test('Checking response when GET writer id using name: ' + writer, function(){\r",
+							"\r",
+							"    pm.expect(response[0].id).to.be.a('number', \r",
+							"    'response id not found for name:' + writer);\r",
+							"\r",
+							"    // Getting an array! Table \"writers\" column \"name\" should be set unique but it is not!\r",
+							"});\r",
+							"\r",
+							"pm.environment.set('lastWriterID', response[0].id);\r",
+							"\r",
+							"// For use as request key value in upcoming step\r",
+							"pm.collectionVariables.set(\"collectionLastWriterID\", response[0].id);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/writers/?name={{writer}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "{{writer}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST booksXwriters",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8d2edf6c-d9ff-44b8-a912-2f0a9dce020c",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let name = pm.iterationData.get('writer');\r",
+							"let title = pm.iterationData.get('title');\r",
+							"let id = pm.environment.get('lastWriterID');\r",
+							"\r",
+							"pm.test('Checking response when POST booksXwriters for: '  + title + ' X ' + name, function(){\r",
+							"\r",
+							"    pm.expect(response.lastID).to.be.a('number', \r",
+							"    'response is missing assigned lastID');\r",
+							"    \r",
+							"    pm.expect(response.changes).to.eql(1, \r",
+							"    'expected response changes 1');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"writer_id\": {{lastWriterID}},\n\t\"book_ISBN_nr\": \"{{ISBN_nr}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/booksXwriters",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"booksXwriters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET bookXwriters by ISBN",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "754a15f9-cbef-4fb3-a699-2e2bda423c37",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let name = pm.iterationData.get('writer');\r",
+							"let title = pm.iterationData.get('title');\r",
+							"let id = pm.environment.get('lastWriterID');\r",
+							"\r",
+							"pm.test('Checking response when GET booksXwriters by ISBN for: '  + title + ' X ' + name, function(){\r",
+							"\r",
+							"    pm.expect(response[0].writer_id).to.be.a('number', \r",
+							"    'response is missing writer id');\r",
+							"    \r",
+							"    pm.expect(response[0].writer_id).to.eql(id, \r",
+							"    'response writer id should equal previous GET writer id: ' + id + ' (' + name + ')');\r",
+							"\r",
+							"    // Reminder: Getting array since one writer can have many books\r",
+							"});\r",
+							"\r",
+							"let isbn = pm.environment.set('ISBN_nr', response[0].book_ISBN_nr);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/booksXwriters/?book_ISBN_nr={{ISBN_nr}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"booksXwriters",
+						""
+					],
+					"query": [
+						{
+							"key": "book_ISBN_nr",
+							"value": "{{ISBN_nr}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET bookXwriters by writer id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4ec39b8b-6204-482e-ac6f-4fb989b8df05",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let name = pm.iterationData.get('writer');\r",
+							"let title = pm.iterationData.get('title');\r",
+							"let isbn = pm.environment.get('ISBN_nr');\r",
+							"\r",
+							"pm.test('Checking response when GET booksXwriters by writer id for: '  + title + ' X ' + name, function(){\r",
+							"    \r",
+							"    for (let res of response) {\r",
+							"        pm.expect(res.book_ISBN_nr).to.be.a('string', \r",
+							"        'response is missing a books ISBN nr');\r",
+							"    }\r",
+							"\r",
+							"    let book = [];\r",
+							"    book = response.filter(x => x.book_ISBN_nr === isbn);\r",
+							"\r",
+							"    pm.expect(book).not.to.have.lengthOf(0, \r",
+							"    'previous result of GET book by ISBN' + isbn + ' (' + title + ') was not found in this response');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/booksXwriters/?writer_id={{collectionLastWriterID}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"booksXwriters",
+						""
+					],
+					"query": [
+						{
+							"key": "writer_id",
+							"value": "{{collectionLastWriterID}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "118c70af-d730-40f5-a1ed-2023b201604b",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "2284f3ef-fbd0-4806-a323-1eddcc66a170",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "a8de1c6d-656d-4fe2-bb7e-d442b3a5c0d4",
+			"key": "collectionLastWriterID",
+			"value": "-1",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

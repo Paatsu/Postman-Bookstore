@@ -1,0 +1,195 @@
+{
+	"info": {
+		"_postman_id": "a173a086-2aec-43e6-8ef9-0ba7ae930c66",
+		"name": "1.1 Add 5 different writers",
+		"description": "rikard_writers_datafile.json required",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST writer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "be325771-aff1-4b03-ad6c-e36b23773cc6",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let name = pm.iterationData.get('name');\r",
+							"\r",
+							"pm.test('Checking response when POST writer: ' + name, function(){\r",
+							"    pm.expect(response.lastID).to.be.a('number', \r",
+							"    'response is missing assigned lastID');\r",
+							"    pm.expect(response.changes).to.eql(1, \r",
+							"    'expected response changes 1');\r",
+							"\r",
+							"    pm.environment.set('lastWriterID', response.lastID);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "168b70d7-bed9-4ef9-bdec-4253e24d9e6b",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"{{name}}\",\n\t\"description\" : \"{{description}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/api/writers/",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET writer by id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c62e38dc-bfe9-425f-bb83-a55247d2ab4e",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"let id = pm.environment.get('lastWriterID');\r",
+							"let name = pm.iterationData.get('name');\r",
+							"let description = pm.iterationData.get('description');\r",
+							"\r",
+							"pm.test('Checking response when GET writer name: ' + name + ' using id: ' + id, function(){\r",
+							"\r",
+							"    pm.expect(response[0].name).to.eql(name, \r",
+							"    'response name mismatch for writer id:' + id);\r",
+							"\r",
+							"    pm.expect(response[0].description).to.eql(description, \r",
+							"    'resoponse description mismatch for writer id: ' + id);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/writers/{{lastWriterID}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						"{{lastWriterID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET writer by name",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f45662df-f4e3-440a-add4-b66bbd2af281",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"let id = pm.environment.get('lastWriterID');\r",
+							"let name = pm.iterationData.get('name');\r",
+							"let description = pm.iterationData.get('description');\r",
+							"\r",
+							"pm.test('Checking response when GET writer id: ' + id + ' using name: ' + name, function(){\r",
+							"\r",
+							"    pm.expect(response[0].id).to.eql(id, \r",
+							"    'response name mismatch for writer id:' + id);\r",
+							"    \r",
+							"    pm.expect(response[0].description).to.eql(description, \r",
+							"    'resoponse description mismatch for writer id: ' + id);\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/writers/?name={{name}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "{{name}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "5c47ce0f-de14-4a54-a682-0ce03b53410f",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "381fcee3-5b40-4626-b978-b011057fd78e",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

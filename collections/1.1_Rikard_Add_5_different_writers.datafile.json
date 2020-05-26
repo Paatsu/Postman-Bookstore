@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Carl Sagan",
+    "description": "Carl Edward Sagan (November 9, 1934 – December 20, 1996) was an American astronomer, planetary scientist, cosmologist, astrophysicist, astrobiologist, author, science popularizer, and science communicator."
+  },
+  {
+    "name": "Douglas Adams",
+    "description": "Douglas Noel Adams (11 March 1952 – 11 May 2001) was an English author, screenwriter, essayist, humorist, satirist and dramatist. Adams was author of The Hitchhiker's Guide to the Galaxy"
+  },
+  {
+    "name": "Neil Strauss",
+    "description": "Neil Darrow Strauss, also known by the pen names Style and Chris Powles (born October 13, 1973) is an American author, journalist and ghostwriter. He is best known for his book The Game: Penetrating the Secret Society of Pickup Artists"
+  },
+  {
+    "name": "Sun Tzu",
+    "description": "Sun Tzu was a Chinese general, military strategist, writer and philosopher who lived in the Eastern Zhou period of ancient China. Sun Tzu is traditionally credited as the author of The Art of War"
+  },
+  {
+    "name": "Frank Herbert",
+    "description": "Franklin Patrick Herbert Jr. (October 8, 1920 – February 11, 1986) was an American science-fiction author best known for the 1965 novel Dune and its five sequels"
+  }
+]
