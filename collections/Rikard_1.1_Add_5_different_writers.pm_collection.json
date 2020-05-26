@@ -1,11 +1,110 @@
 {
 	"info": {
 		"_postman_id": "a173a086-2aec-43e6-8ef9-0ba7ae930c66",
-		"name": "1.1 Add 5 different writers",
+		"name": "1.1 Add 5 different writers (datafile required)",
 		"description": "rikard_writers_datafile.json required",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
+		{
+			"name": "GET check preconditions",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fc0fd12d-5d48-45ef-b1be-e041a9284ad2",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Halt if\r",
+							"if (response.length || pm.info.iterationCount !== 5) { \r",
+							"    postman.setNextRequest(null);\r",
+							"};\r",
+							"\r",
+							"pm.test('Checking preconditions for this collection', function(){\r",
+							"\r",
+							"    // Just to get assertion message\r",
+							"    pm.expect(response.length).to.eql(0, \r",
+							"    'Preexisting testdata. Seems this collection has already been run');\r",
+							"\r",
+							"    // Just to get assertion message\r",
+							"    pm.expect(pm.info.iterationCount).to.equal(5, \r",
+							"    'Missing testdata. Please use correct datafile for this collection');\r",
+							"    \r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/writers/?name=Frank Herbert",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						""
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "Frank Herbert"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET all writers inital total",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2a659bef-49db-415d-ae0d-8956d8a43e18",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let sumTotal = pm.collectionVariables.get('allWritersInitialTotal');\r",
+							"\r",
+							"pm.test('Checking total writers in DB', function(){\r",
+							"\r",
+							"    pm.expect(response.length).to.be.above(19, \r",
+							"    'expected default database to contain atleast 20 writers');\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// Saving for comparison in later steps\r",
+							"if (sumTotal < 0) {\r",
+							"    pm.collectionVariables.set('allWritersInitialTotal', response.length);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/writers",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers"
+					]
+				}
+			},
+			"response": []
+		},
 		{
 			"name": "POST writer",
 			"event": [
@@ -18,8 +117,10 @@
 							"let name = pm.iterationData.get('name');\r",
 							"\r",
 							"pm.test('Checking response when POST writer: ' + name, function(){\r",
+							"    \r",
 							"    pm.expect(response.lastID).to.be.a('number', \r",
 							"    'response is missing assigned lastID');\r",
+							"\r",
 							"    pm.expect(response.changes).to.eql(1, \r",
 							"    'expected response changes 1');\r",
 							"\r",
@@ -167,6 +268,45 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "GET all writers total",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "367fd2f6-621f-423b-988f-f402f8b7e118",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let sumTotal = pm.collectionVariables.get('allWritersInitialTotal') + pm.info.iteration + 1;\r",
+							"\r",
+							"pm.test('Checking total writers in DB', function(){\r",
+							"\r",
+							"    pm.expect(response.length).to.eql(sumTotal, \r",
+							"    'expected default database to contain ' + sumTotal +  ' writers at this iteration');\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/writers",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -189,6 +329,14 @@
 					""
 				]
 			}
+		}
+	],
+	"variable": [
+		{
+			"id": "7df6c322-049d-4d69-b1e0-b18a94143bdd",
+			"key": "allWritersInitialTotal",
+			"value": "-1",
+			"type": "string"
 		}
 	],
 	"protocolProfileBehavior": {}
