@@ -1,0 +1,193 @@
+{
+	"info": {
+		"_postman_id": "230d7bc2-caf8-4c06-a5c1-31019271a7c0",
+		"name": "johnny",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create five writers",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "89ce195a-8a86-4e72-bf4c-b0fd0beda4ae",
+						"exec": [
+							"// Setting mockdata and counter as environement variables\r",
+							"// Note: Environement variables can only be strings!\r",
+							"if (!pm.environment.has(\"mockData\")) {\r",
+							"    let mockData = [\r",
+							"      {\r",
+							"        \"name\": \"Vilhelm Moberg\",\r",
+							"        \"description\": \"Karl Artur Vilhelm Moberg, född 20 augusti 1898 i Moshultamåla, Algutsboda församling i Småland, död 8 augusti 1973 i Tomta i Väddö församling, Stockholms län, var en svensk författare, journalist och dramatiker. Hans produktion innehåller många kända verk, bland dem Utvandrarserien. Moberg var far till Eva Moberg.\"\r",
+							"      },\r",
+							"      {\r",
+							"        \"name\": \"Karin Boye\",\r",
+							"        \"description\": \"Karin Maria Boye, under en tid Björk, född 26 oktober 1900 på Vasaplatsen 11 i Göteborg, död natten till den 24 april 1941 i Alingsås, var en svensk författare, poet och översättare. Hon var mest känd för sin poesi, men skrev även ett flertal romaner, noveller och artiklar.\"\r",
+							"      },\r",
+							"      {\r",
+							"        \"name\": \"Harry Martinson\",\r",
+							"        \"description\": \"Harry Edmund Martinson, född 6 maj 1904 i Jämshög i Blekinge, död 11 februari 1978 i Solna, var en svensk författare.\"\r",
+							"      },\r",
+							"      {\r",
+							"        \"name\": \"Hjalmar Söderberg\",\r",
+							"        \"description\": \"Hjalmar Emil Fredrik Söderberg, född 2 juli 1869 i Stockholm, död 14 oktober 1941 i Köpenhamn, var en svensk författare, skribent och översättare. Hans författarskap räknas som ett av de mer betydelsefulla i Sverige under 1900-talet.\"\r",
+							"      },\r",
+							"      {\r",
+							"       \"name\": \"Eyvind Johnson\",\r",
+							"       \"description\": \"Olof Edvin Verner 'Eyvind' Johnson, född 29 juli 1900 i Björkelund utanför Boden, död 25 augusti 1976 i Stockholm, var en svensk författare och översättare. Eyvind Johnson var en proletärförfattare som tog intryck av samtidens nya litterära strömningar.\"\r",
+							"      }\r",
+							"    ];\r",
+							"    pm.environment.set(\"counter\", 0);\r",
+							"    pm.environment.set(\"mockData\", JSON.stringify(mockData));\r",
+							" }\r",
+							"\r",
+							" // Reading/parsing environment variables back to local variables\r",
+							" let counter = pm.environment.get(\"counter\") / 1;\r",
+							" let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							" let {name, description} = mockData[counter];\r",
+							"\r",
+							" // Save to environment variables to use in the request\r",
+							" pm.environment.set('name', name);\r",
+							" pm.environment.set('description', description);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "fb0a6ac9-4507-4b12-ba15-44353b6ebf53",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"// Add the inserted id to the mockData and save to environment\r",
+							"mockData[counter].id = response.lastID;\r",
+							"pm.environment.set('mockData', JSON.stringify(mockData));\r",
+							"\r",
+							"// Test number of changed rows\r",
+							"pm.test('one row should be changed', function(){\r",
+							"    pm.expect(response.changes).to.equal(1);\r",
+							"});\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Create five writers');\r",
+							"}\r",
+							"// Otherwise reset the counter\r",
+							"// (for the next request that will reuse the mockdata)\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"{{name}}\",\n\t\"description\": \"{{description}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Read writer",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2a2aa8f4-d024-4464-bc7d-21c55d4c629d",
+						"exec": [
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let {id} = mockData[counter];\r",
+							"\r",
+							"// Save to environment variable to use in the request\r",
+							"pm.environment.set('id', id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "cf112ad8-43f4-4bdb-b265-4c646326102a",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"// Compare with the response from the database;\r",
+							"pm.test('data in db should equal previously written mock data', function(){\r",
+							"    pm.expect(response, counter + ' used').to.deep.equal([mockData[counter]]);\r",
+							"});\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Read writer');\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/writers/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
