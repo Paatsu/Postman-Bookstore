@@ -1,17 +1,17 @@
 {
 	"info": {
-		"_postman_id": "230d7bc2-caf8-4c06-a5c1-31019271a7c0",
-		"name": "johnny",
+		"_postman_id": "e5a257b9-d691-4296-bd97-f51db5c92541",
+		"name": "Writers",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Create five writers",
+			"name": "Create writers",
 			"event": [
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "89ce195a-8a86-4e72-bf4c-b0fd0beda4ae",
+						"id": "713746e6-2a22-4805-87e0-b21f321da7cb",
 						"exec": [
 							"// Setting mockdata and counter as environement variables\r",
 							"// Note: Environement variables can only be strings!\r",
@@ -57,7 +57,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "fb0a6ac9-4507-4b12-ba15-44353b6ebf53",
+						"id": "9a3cc42f-a2eb-4392-8ed0-cc1c961020c4",
 						"exec": [
 							"// The response\r",
 							"let response = pm.response.json();\r",
@@ -81,7 +81,7 @@
 							"\r",
 							"// Run request again if more mockdata\r",
 							"if(mockData[counter]){\r",
-							"    postman.setNextRequest('Create five writers');\r",
+							"    postman.setNextRequest('Create writers');\r",
 							"}\r",
 							"// Otherwise reset the counter\r",
 							"// (for the next request that will reuse the mockdata)\r",
@@ -126,7 +126,7 @@
 				{
 					"listen": "prerequest",
 					"script": {
-						"id": "2a2aa8f4-d024-4464-bc7d-21c55d4c629d",
+						"id": "6abe4718-d698-4585-908c-e9b1a1b82a1a",
 						"exec": [
 							"// Reading/parsing environment variables back to local variables\r",
 							"let counter = pm.environment.get(\"counter\") / 1;\r",
@@ -142,7 +142,7 @@
 				{
 					"listen": "test",
 					"script": {
-						"id": "cf112ad8-43f4-4bdb-b265-4c646326102a",
+						"id": "313de16c-4ecc-41ed-922b-c929f1b831fc",
 						"exec": [
 							"// The response\r",
 							"let response = pm.response.json();\r",
