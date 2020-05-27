@@ -1,0 +1,584 @@
+{
+	"info": {
+		"_postman_id": "06f5ff89-ea84-4da8-827e-ad6c4cf2cbfe",
+		"name": "Soren_4.3_create_orders",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST clients",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4663ba2a-26e2-4360-9aae-380d43e2601e",
+						"exec": [
+							"pm.collectionVariables.set(\"email\", \"\\\"\" + Math.random().toString(36).substr(2, 5) + \"@\" + Math.random().toString(36).substr(2, 5) + \".com\" + \"\\\"\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "fa1f7acd-0b12-48dc-aaef-ec9495d7f9dc",
+						"exec": [
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('POST Books');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": {{email}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST Books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ace42483-f839-43aa-8349-caf55764045f",
+						"exec": [
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('POST booksXwriters');\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "7b539ad0-11cc-44d5-b705-6f5a884f56d1",
+						"exec": [
+							"pm.collectionVariables.set(\"ISBN_nr\", \"\\\"\" + Math.floor(100000000 + Math.random() * 900000000) + \"-\" + Math.floor(Math.random() * 10) + \"\\\"\");\r",
+							"pm.collectionVariables.set(\"title\", \"\\\"\" + Math.random().toString(36).substr(2, 5) + \"\\\"\");\r",
+							"pm.collectionVariables.set(\"Description\", \"\\\"\" + Math.random().toString(36).substr(2, 5) + \"\\\"\");\r",
+							"pm.collectionVariables.set(\"pages\", Math.floor(Math.random() * 10000));\r",
+							"pm.collectionVariables.set(\"price\", Math.floor(Math.random() * 10000));\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"ISBN_nr\": {{ISBN_nr}},\r\n  \"title\": {{title}},\r\n  \"description\": {{Description}},\r\n  \"pages\": {{pages}},\r\n  \"price\": {{price}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Post a writer\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "POST booksXwriters",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "70912673-a314-4b6d-ad88-7afdac82b783",
+						"exec": [
+							"pm.collectionVariables.set(\"author\", 1);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "cd10477b-0c4e-4c6a-93e9-f9784b89720b",
+						"exec": [
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('POST orders');\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"writer_id\": {{author}},\n\t\"book_ISBN_nr\": {{ISBN_nr}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/booksXwriters",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"booksXwriters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST orders",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2c45608a-2904-4501-99fe-bdc7406d3f2b",
+						"exec": [
+							"pm.collectionVariables.set(\"date\", \"\\\"\" + \"2020-\" + (Math.floor(Math.random())) + (Math.floor(Math.random() * 8 + 1)) + \"-\" + (Math.floor(Math.random() * (30 - 10)) + 10) + \" \" + (Math.floor(Math.random() * (24 - 10)) + 10) + \":\" + (Math.floor(Math.random() * (60 - 10)) + 10) + \":\" + (Math.floor(Math.random() * (60 - 10)) + 10) + \"\\\"\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "ec26844d-b996-4bec-bab8-52da98e4ad98",
+						"exec": [
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"orderId\", jsonData.lastID);\r",
+							"\r",
+							"postman.setNextRequest('POST orderlines');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"date\": {{date}},\n\t\"client_email\": {{email}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/orders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST orderlines",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "ec73c37e-6a93-4d9b-98a0-821518ed6e34",
+						"exec": [
+							"let amount = Math.floor(Math.random() * (50 - 1)) + 1;\r",
+							"pm.collectionVariables.set(\"amount\", amount);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "05777623-0238-4553-826f-c090a1fa996a",
+						"exec": [
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"orderLineId\", jsonData.lastID);\r",
+							"\r",
+							"postman.setNextRequest('POST orderlinesXorders');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"amount\": {{amount}},\n\t\"book_ISBN_nr\": {{ISBN_nr}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/orderlines",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlines"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST orderlinesXorders",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9741ef27-61fa-4580-ad32-1b10d872f89f",
+						"exec": [
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"    \r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('GET orders');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"order_line_id\": {{orderLineId}},\n\t\"order_id\": {{orderId}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/orderlinesXorders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlinesXorders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET orders",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d66ad2d3-16e3-49c2-8fcb-26e036dc89f1",
+						"exec": [
+							"let date = pm.collectionVariables.get(\"date\");\r",
+							"let email = pm.collectionVariables.get(\"email\");\r",
+							"\r",
+							"\r",
+							"pm.test(\"Order was created\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(JSON.stringify(jsonData[0].date)).to.eql(date);\r",
+							"    pm.expect(JSON.stringify(jsonData[0].client_email)).to.eql(email);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('GET orderlines');\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orders/{{orderId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders",
+						"{{orderId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET orderlines",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ebe267d1-ce26-46ac-9489-a673e0b6faca",
+						"exec": [
+							"let amount = pm.collectionVariables.get(\"amount\");\r",
+							"let ISBNnr = pm.collectionVariables.get(\"ISBN_nr\");\r",
+							"\r",
+							"\r",
+							"pm.test(\"Orderline was created\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0].amount).to.eql(amount);\r",
+							"    pm.expect(JSON.stringify(jsonData[0].book_ISBN_nr)).to.eql(ISBNnr);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('GET orderlinesXorders');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orderlines/{{orderLineId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlines",
+						"{{orderLineId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET orderlinesXorders",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "53b862e4-1f95-4e7d-8bef-c2d39412f059",
+						"exec": [
+							"let orderlineid = pm.collectionVariables.get(\"orderLineId\");\r",
+							"let orderid = pm.collectionVariables.get(\"orderId\");\r",
+							"\r",
+							"\r",
+							"pm.test(\"OrderlinesXorders was created\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0].order_line_id).to.eql(orderlineid);\r",
+							"    pm.expect(jsonData[0].order_id).to.eql(orderid);\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orderlinesXorders/?order_line_id={{orderLineId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlinesXorders",
+						""
+					],
+					"query": [
+						{
+							"key": "order_line_id",
+							"value": "{{orderLineId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"id": "77ee39f1-6d81-4044-84fc-e4ec67efe542",
+			"key": "email",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "eae54aea-bf44-43dc-b841-3e98d22e0624",
+			"key": "date",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "a0b3b9f8-ae20-42de-8230-235777108500",
+			"key": "Description",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "88ddb768-8701-4c93-8297-d04d43308692",
+			"key": "ISBN_nr",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "2df65256-1f6b-4b01-bbcc-ed107d5867df",
+			"key": "pages",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "2d8a8fb6-8d10-447c-97de-d5d17b78a68b",
+			"key": "price",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "0fbb3634-4ba2-46df-bc9b-b9b13871ecd1",
+			"key": "title",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "06bfae57-6226-4508-998f-0ab3319190ff",
+			"key": "amount",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "f9402fb5-3e41-4d3d-a0b5-e1136171b2ec",
+			"key": "orderId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "aeed3467-9d8c-468d-810a-7f13a42db340",
+			"key": "orderLineId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "e9aec81b-4442-4fbb-afdf-300ba8b11ef2",
+			"key": "author",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "5f5e99fc-ea2d-4bcf-96aa-8e5de2f28cb5",
+			"key": "orderlinesXorderId",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

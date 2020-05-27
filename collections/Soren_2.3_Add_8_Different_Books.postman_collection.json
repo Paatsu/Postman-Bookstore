@@ -1,0 +1,372 @@
+{
+	"info": {
+		"_postman_id": "ce376db4-7350-41ff-bb14-5d96b6680ff1",
+		"name": "Soren_2.3_Add_8_Different_Books",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST Books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "2496e446-5b20-4561-9c38-19c666e828b5",
+						"exec": [
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(`LastID`, jsonData.lastID);\r",
+							"postman.setNextRequest('POST booksXwriters');\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c1597638-d087-44b7-9665-5da593f77433",
+						"exec": [
+							"pm.collectionVariables.set(\"ISBN_nr\", \"\\\"\" + Math.floor(100000000 + Math.random() * 900000000) + \"-\" + Math.floor(Math.random() * 10) + \"\\\"\");\r",
+							"pm.collectionVariables.set(\"title\", \"\\\"\" + Math.random().toString(36).substr(2, 5) + \"\\\"\");\r",
+							"pm.collectionVariables.set(\"Description\", \"\\\"\" + Math.random().toString(36).substr(2, 5) + \"\\\"\");\r",
+							"pm.collectionVariables.set(\"pages\", Math.floor(Math.random() * 10000));\r",
+							"pm.collectionVariables.set(\"price\", Math.floor(Math.random() * 10000));\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"ISBN_nr\": {{ISBN_nr}},\r\n  \"title\": {{title}},\r\n  \"description\": {{Description}},\r\n  \"pages\": {{pages}},\r\n  \"price\": {{price}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Post a writer\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "POST booksXwriters",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "65fd81f1-d627-49ec-9fdf-5eb9f9a09c98",
+						"exec": [
+							"pm.collectionVariables.set(\"author\", 1);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "979c687b-f200-4b66-a43e-b1b43060909f",
+						"exec": [
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('GET Writers');\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"writer_id\": {{author}},\n\t\"book_ISBN_nr\": {{ISBN_nr}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/booksXwriters",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"booksXwriters"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET Writers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d611f941-5135-4104-bc61-10246e901676",
+						"exec": [
+							"// This is only here to get authors name to a variable so am not testing\r",
+							"\r",
+							"let response = JSON.parse(responseBody);\r",
+							"let authorId = pm.collectionVariables.get(\"author\");\r",
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"\r",
+							"    pm.expect(response[0].id).to.eql(authorId)\r",
+							"\r",
+							"});\r",
+							"\r",
+							"pm.collectionVariables.set(\"authorName\", response[0].name);\r",
+							"postman.setNextRequest('GET books_and_writers');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "text"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers/{{author}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						"{{author}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET books_and_writers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "45f48358-3007-4e1d-8ec5-ca9e5da5a988",
+						"exec": [
+							"let response = JSON.parse(responseBody);\r",
+							"let currentBook = pm.collectionVariables.get(\"title\");\r",
+							"let author = pm.collectionVariables.get(\"authorName\");\r",
+							"\r",
+							"let counter = pm.collectionVariables.get(\"Counter\");\r",
+							"let bookNr = 9 - counter;\r",
+							"let currentBookExists = false;\r",
+							"\r",
+							"pm.test(`Book ${bookNr} has the right author assigned`, function () {\r",
+							"\r",
+							"    for (const viewObject of response) {\r",
+							"\r",
+							"        if (\"\\\"\" + viewObject.bookTitle + \"\\\"\" == currentBook) {\r",
+							"\r",
+							"            currentBookExists = true;\r",
+							"            pm.expect(viewObject.authors).to.eql(author);\r",
+							"\r",
+							"        }\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"pm.test(`Book ${bookNr} is added to the database`, function () {\r",
+							"\r",
+							"    pm.expect(currentBookExists).to.be.true;\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// Counter\r",
+							"counter--;\r",
+							"pm.collectionVariables.set(\"Counter\", counter);\r",
+							"if(counter > 0) {\r",
+							"\r",
+							"    postman.setNextRequest('POST Books');\r",
+							"\r",
+							"} else {\r",
+							"\r",
+							"    pm.collectionVariables.set(\"Counter\", 8);\r",
+							"\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/books_and_writers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books_and_writers"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "a465f2d5-d465-475b-a5d6-aec9ad8d233c",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "d1fb5133-8166-4cff-857c-097e50ea610a",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "283d114d-3c69-4bb6-b778-a574a79209d7",
+			"key": "Counter",
+			"value": "8",
+			"type": "string"
+		},
+		{
+			"id": "06a91b15-ff2d-41a1-8317-2377a615a780",
+			"key": "ISBN_nr",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "b64b1bed-fa72-4afa-b3a0-58c679866677",
+			"key": "description",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "a3acdfbd-52a0-4de2-9d50-e5b704d1fec2",
+			"key": "pages",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "fd553bb4-94c6-462e-ac5f-d9884fc4ff14",
+			"key": "price",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "ce38a48f-d361-4636-ab8c-67f442ffcbd7",
+			"key": "title",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "89d30bbe-8dab-44bc-a30d-205c0715d594",
+			"key": "Description",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "4f6505c2-9264-4c50-a5d4-7a2f441a47f6",
+			"key": "Name",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "edff5394-6f57-4f6c-9894-d27f329b5788",
+			"key": "PostmanWriterIdArray",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "a0c47242-7fe5-4f8d-9822-47e14201171e",
+			"key": "ISBN_nr1",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "ea660d13-cc0e-4464-b255-d8a5d2a58524",
+			"key": "LastID",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "1c82d2b2-5d34-444f-bce7-e35bdea604e6",
+			"key": "author",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "fd763a6f-df9b-45b2-a57c-e351ebfc1063",
+			"key": "authorName",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

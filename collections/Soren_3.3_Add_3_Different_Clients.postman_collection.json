@@ -1,0 +1,165 @@
+{
+	"info": {
+		"_postman_id": "2a58b8a7-5847-4a2c-af98-548da448c3ad",
+		"name": "Soren_3.3_Add_3_Different_Clients",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST clients",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "848b3e66-5d42-4f3c-8118-bf1cf508ee3d",
+						"exec": [
+							"pm.collectionVariables.set(\"email\", \"\\\"\" + Math.random().toString(36).substr(2, 5) + \"@\" + Math.random().toString(36).substr(2, 5) + \".com\" + \"\\\"\");\r",
+							"console.log(pm.collectionVariables.get(\"email\"))"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "722d0540-a4ae-4b27-a2ff-a487712c0cb8",
+						"exec": [
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('GET clients');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": {{email}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET clients",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3a98574c-ee0d-46bf-8b7a-7c526027aca0",
+						"exec": [
+							"let response = JSON.parse(responseBody);\r",
+							"let email = pm.collectionVariables.get(\"email\");\r",
+							"let emailInList = false;\r",
+							"\r",
+							"for (const client of response) {\r",
+							"\r",
+							"    if (JSON.stringify(client.email) == email) {\r",
+							"\r",
+							"        emailInList = true;\r",
+							"\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"pm.test(`The client: ${email} was successfully added to client list`, function () {\r",
+							"    pm.expect(emailInList).to.be.true;\r",
+							"});\r",
+							"\r",
+							"let counter = pm.collectionVariables.get(\"Counter\");\r",
+							"counter--;\r",
+							"pm.collectionVariables.set(\"Counter\", counter);\r",
+							"\r",
+							"\r",
+							"if(counter > 0) {\r",
+							"\r",
+							"    postman.setNextRequest('POST clients');\r",
+							"\r",
+							"} else {\r",
+							"    \r",
+							"    pm.collectionVariables.set(\"Counter\", 3);\r",
+							"\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "9fe09ba9-c249-4827-8495-38d8d7f3d1e5",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "a9e8bf0b-e134-4aea-8e71-cd6476dae08d",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "0e204877-70d7-44cb-b9e6-61665b45a9c2",
+			"key": "email",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "950b3b27-7051-4515-ba25-6865019b030b",
+			"key": "Counter",
+			"value": "3",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

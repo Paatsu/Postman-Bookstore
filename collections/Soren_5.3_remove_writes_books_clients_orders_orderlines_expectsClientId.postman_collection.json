@@ -1,0 +1,1169 @@
+{
+	"info": {
+		"_postman_id": "5089449e-234f-4e29-84fc-e0da0729284a",
+		"name": "Soren_5.3_remove_writes_books_clients_orders_orderlines_expectsClientId",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST writers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ca4d036a-3430-4612-8b97-21c148bf38a3",
+						"exec": [
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"writerId\", jsonData.lastID);\r",
+							"\r",
+							"postman.setNextRequest('GET writers');"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "f6daa9aa-0760-4208-9b8b-df6b71aaf863",
+						"exec": [
+							"pm.collectionVariables.set(\"writerDescription\", \"\\\"\" + Math.random().toString(36).substr(2, 5) + \"\\\"\");\r",
+							"pm.collectionVariables.set(\"Name\", \"\\\"\" + Math.random().toString(36).substr(2, 5) + \"\\\"\");\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": {{Name}},\r\n  \"description\": {{writerDescription}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Post a writer\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "GET writers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "47d8ab6d-0bbb-4f4f-9225-fb189af88b9b",
+						"exec": [
+							"let name = pm.collectionVariables.get(\"Name\");\r",
+							"let description = pm.collectionVariables.get(\"writerDescription\");\r",
+							"\r",
+							"\r",
+							"pm.test(\"Writer was created\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(JSON.stringify(jsonData[0].name)).to.eql(name);\r",
+							"    pm.expect(JSON.stringify(jsonData[0].description)).to.eql(description);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('POST books');"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "2d104ca9-80da-4616-869b-f5fb6b91e628",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers/{{writerId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						"{{writerId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8aeef138-e8f2-4c79-9ffc-fee57cb9f1fd",
+						"exec": [
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"bookId\", jsonData.lastID);\r",
+							"\r",
+							"postman.setNextRequest('GET books');\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "64b45d20-d226-4159-a099-631cc9d39bf1",
+						"exec": [
+							"pm.collectionVariables.set(\"ISBN_nr\", \"\\\"\" + Math.floor(100000000 + Math.random() * 900000000) + \"-\" + Math.floor(Math.random() * 10) + \"\\\"\");\r",
+							"pm.collectionVariables.set(\"title\", \"\\\"\" + Math.random().toString(36).substr(2, 5) + \"\\\"\");\r",
+							"pm.collectionVariables.set(\"bookDescription\", \"\\\"\" + Math.random().toString(36).substr(2, 5) + \"\\\"\");\r",
+							"pm.collectionVariables.set(\"pages\", Math.floor(Math.random() * 10000));\r",
+							"pm.collectionVariables.set(\"price\", Math.floor(Math.random() * 10000));\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"ISBN_nr\": {{ISBN_nr}},\r\n  \"title\": {{title}},\r\n  \"description\": {{bookDescription}},\r\n  \"pages\": {{pages}},\r\n  \"price\": {{price}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Post a writer\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "GET books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "7433d975-c605-4322-81c7-55110a949e46",
+						"exec": [
+							"let ISBNnr = pm.collectionVariables.get(\"ISBN_nr\");\r",
+							"let title = pm.collectionVariables.get(\"title\");\r",
+							"let description = pm.collectionVariables.get(\"bookDescription\");\r",
+							"let pages = pm.collectionVariables.get(\"pages\");\r",
+							"let price = pm.collectionVariables.get(\"price\");\r",
+							"\r",
+							"pm.test(\"Book was created\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(JSON.stringify(jsonData[0].ISBN_nr)).to.eql(ISBNnr);\r",
+							"    pm.expect(JSON.stringify(jsonData[0].title)).to.eql(title);\r",
+							"    pm.expect(JSON.stringify(jsonData[0].description)).to.eql(description);\r",
+							"    pm.expect(jsonData[0].pages).to.eql(pages);\r",
+							"    pm.expect(jsonData[0].price).to.eql(price);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('POST clients');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/books/{{bookId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books",
+						"{{bookId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST clients",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "fae69322-3d61-4bae-a924-590fe8662d4c",
+						"exec": [
+							"pm.collectionVariables.set(\"email\", \"\\\"\" + Math.random().toString(36).substr(2, 5) + \"@\" + Math.random().toString(36).substr(2, 5) + \".com\" + \"\\\"\");\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "51975a32-9b9f-4e34-bb47-13fd28f7f35f",
+						"exec": [
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"clientId\", jsonData.lastID);\r",
+							"\r",
+							"postman.setNextRequest('GET clients');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": {{email}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET clients",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f1b1f8c1-d85a-4abb-bb2e-a623b9235463",
+						"exec": [
+							"let email = pm.collectionVariables.get(\"email\");\r",
+							"\r",
+							"pm.test(\"Client was created\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(JSON.stringify(jsonData[0].email)).to.eql(email);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('POST orders');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/clients/{{clientId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients",
+						"{{clientId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST orders",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "3a78de94-07d0-4ab3-8724-8b142f30bdff",
+						"exec": [
+							"pm.collectionVariables.set(\"date\", \"\\\"\" + \"2020-\" + (Math.floor(Math.random())) + (Math.floor(Math.random() * 8 + 1)) + \"-\" + (Math.floor(Math.random() * (30 - 10)) + 10) + \" \" + (Math.floor(Math.random() * (24 - 10)) + 10) + \":\" + (Math.floor(Math.random() * (60 - 10)) + 10) + \":\" + (Math.floor(Math.random() * (60 - 10)) + 10) + \"\\\"\");"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "a69c4bf6-15a9-4213-b0e5-44f661806254",
+						"exec": [
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"ordersId\", jsonData.lastID);\r",
+							"\r",
+							"postman.setNextRequest('GET orders');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"date\": {{date}},\n\t\"client_email\": {{email}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/orders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET orders",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fb646aa5-dc94-4ca4-b483-d51ddbc054dc",
+						"exec": [
+							"let date = pm.collectionVariables.get(\"date\");\r",
+							"let email = pm.collectionVariables.get(\"email\");\r",
+							"\r",
+							"pm.test(\"Order was created\", function () {\r",
+							"\r",
+							"    let jsonData = pm.response.json();\r",
+							"    pm.expect(JSON.stringify(jsonData[0].date)).to.eql(date);\r",
+							"    pm.expect(JSON.stringify(jsonData[0].client_email)).to.eql(email);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('POST orderlines');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orders/{{ordersId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders",
+						"{{ordersId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST orderlines",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "eaf768a7-6661-436e-8301-579cfd6e0300",
+						"exec": [
+							"let amount = Math.floor(Math.random() * (50 - 1)) + 1;\r",
+							"pm.collectionVariables.set(\"amount\", amount);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "f98f226a-e63b-434f-8060-2fd9deb933b8",
+						"exec": [
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"orderLineId\", jsonData.lastID);\r",
+							"\r",
+							"postman.setNextRequest('GET orderlines');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"amount\": {{amount}},\n\t\"book_ISBN_nr\": {{ISBN_nr}}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/orderlines",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlines"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET orderlines",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a729da72-cc3a-43b0-ae73-59e2e6feccdb",
+						"exec": [
+							"let amount = pm.collectionVariables.get(\"amount\");\r",
+							"let ISBN = pm.collectionVariables.get(\"ISBN_nr\");\r",
+							"\r",
+							"pm.test(\"Orderline was created\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0].amount).to.eql(amount);\r",
+							"    pm.expect(JSON.stringify(jsonData[0].book_ISBN_nr)).to.eql(ISBN);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('DELETE writers');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orderlines/{{orderLineId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlines",
+						"{{orderLineId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE writers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3959a8b9-8d06-4dbe-b57c-a6e7943fc854",
+						"exec": [
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('GET writersDeleted');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/writers/{{writerId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						"{{writerId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET writersDeleted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9de254c3-9a28-47e0-8fc0-0d7d5ddcd6cc",
+						"exec": [
+							"pm.test(\"Writer was deleted\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql([]);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('DELETE books');"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6c8de547-277b-4f64-88ee-d4c8caebe9a6",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers/{{writerId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						"{{writerId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE books",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d9b46270-93c2-47c9-9097-273054d5e0a8",
+						"exec": [
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('GET booksDeleted');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/books/{{bookId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books",
+						"{{bookId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET booksDeleted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "a2ac6523-3b00-4ae3-89e4-8b397ec24c3f",
+						"exec": [
+							"pm.test(\"Book was deleted\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql([]);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('DELETE clients');"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "82f0c7db-7e05-450a-b689-c4a7424ed9d4",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books/{{bookId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books",
+						"{{bookId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE clients",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6f86c8fd-8e25-41ff-aa23-283a621c1e4d",
+						"exec": [
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('GET clientsDeleted');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/clients/{{clientId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients",
+						"{{clientId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET clientsDeleted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "6eae039b-42d8-4538-9738-9c6fc90cc9b6",
+						"exec": [
+							"pm.test(\"Client was deleted\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql([]);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('DELETE orders');"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "dbe08ec9-0664-4165-b2f5-b7971b06de5e",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/books/{{bookId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books",
+						"{{bookId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE orders",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8c462595-eaf6-4457-84e6-b2a5c2a3f20c",
+						"exec": [
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('GET ordersDeleted');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orders/{{ordersId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders",
+						"{{ordersId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET ordersDeleted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c9599828-e6e9-4a0e-82b8-e2d80375c859",
+						"exec": [
+							"pm.test(\"Order was deleted\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql([]);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('DELETE orderlines');"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "6921dee7-b1ed-4572-94c1-aaad1ee1d5cb",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/orders/{{ordersId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orders",
+						"{{ordersId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE orderlines",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "aa45d18b-694d-4e57-887c-e3a452264737",
+						"exec": [
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"    \r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest('GET orderlinesDeleted');"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/orderlines/{{orderLineId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlines",
+						"{{orderLineId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET orderlinesDeleted",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "fdbbb0c7-ecec-49b5-b502-874caaa5230e",
+						"exec": [
+							"pm.test(\"Orderline was deleted\", function () {\r",
+							"\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.eql([]);\r",
+							"\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "9e18265e-1445-4bff-a2a7-e32e1dc2d626",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/orderlines/{{orderLineId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"orderlines",
+						"{{orderLineId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"id": "bc385eb6-4740-4254-9582-b81007dd82d6",
+			"key": "Description",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "d9a37bd8-49a8-4db4-8810-80e229670b35",
+			"key": "Name",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "e21b1169-cd56-40c0-92ff-e067bf6de3c4",
+			"key": "writerId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "8ebcefda-db2a-48f2-9d5b-e31ed3ead235",
+			"key": "ISBN_nr",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "33cb2fca-072c-4981-8698-949f19b8ff16",
+			"key": "bookDescription",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "e3a99227-027b-4d96-ae62-b54329453fe2",
+			"key": "pages",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "1873d69e-cebb-4457-862c-11f189077bec",
+			"key": "price",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "b0381fc5-50d7-4028-a1d5-7b6518efbcc2",
+			"key": "title",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "d69b91bd-3c63-476d-aeba-48e9ef72c4b8",
+			"key": "bookId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "a538dd31-74d1-4889-85f3-36848a99530a",
+			"key": "email",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "f3babbaf-6cfe-49d4-9ee5-78ecd3a6c779",
+			"key": "clientId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "52ff410d-a26c-458f-9acd-81a8279c28c3",
+			"key": "date",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "42773b99-46e4-41ea-9b8e-f6fc6eea4979",
+			"key": "orderId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "7f6b2437-3087-4408-b66a-45cca72e0ecc",
+			"key": "amount",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "ff74768e-c939-49e0-a45b-8809026be4e2",
+			"key": "orderLineId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "af6525d2-058d-4ae0-bab6-b571ab9cbaea",
+			"key": "writerDescription",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "0de80da7-2592-429c-bccf-7e8b420cfe4e",
+			"key": "ordersId",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

@@ -1,0 +1,327 @@
+{
+	"info": {
+		"_postman_id": "21b9d834-978e-49c4-bdc5-f1d2a309ddea",
+		"name": "Soren_1.3_Add_5_Different_Writers",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST Test writers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "809140ac-6dc8-4ce6-b311-9289026c7678",
+						"exec": [
+							"// Test\r",
+							"let description = pm.collectionVariables.set(\"Description\");\r",
+							"let name = pm.collectionVariables.set(\"Name\");\r",
+							"\r",
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"});\r",
+							"\r",
+							"// Variable for later requests\r",
+							"if(!pm.collectionVariables.get(\"PostmanWriterIdArray\")) {\r",
+							"\r",
+							"    pm.collectionVariables.set(\"PostmanWriterIdArray\", \"[]\");\r",
+							"    let writerArray = JSON.parse(pm.collectionVariables.get(\"PostmanWriterIdArray\"));\r",
+							"    let jsonData = pm.response.json();\r",
+							"    writerArray.push(jsonData.lastID);\r",
+							"    pm.collectionVariables.set(\"PostmanWriterIdArray\", writerArray);\r",
+							"\r",
+							"} else {\r",
+							"\r",
+							"let writerArray = pm.collectionVariables.get(\"PostmanWriterIdArray\");\r",
+							"let jsonData = pm.response.json();\r",
+							"writerArray.push(jsonData.lastID);\r",
+							"pm.collectionVariables.set(\"PostmanWriterIdArray\", writerArray);\r",
+							"\r",
+							"}\r",
+							"\r",
+							"// Counter\r",
+							"let counter = pm.collectionVariables.get(\"Counter\");\r",
+							"counter--;\r",
+							"pm.collectionVariables.set(\"Counter\", counter);\r",
+							"if(counter > 0) {\r",
+							"\r",
+							"    postman.setNextRequest('POST Test writers');\r",
+							"\r",
+							"} else {\r",
+							"\r",
+							"    pm.collectionVariables.set(\"Counter\", 5);\r",
+							"\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "91ce569e-6af8-4a6c-be37-ad5510685883",
+						"exec": [
+							"pm.collectionVariables.set(\"Description\", \"\\\"\" + Math.random().toString(36).substr(2, 5) + \"\\\"\");\r",
+							"pm.collectionVariables.set(\"Name\", \"\\\"\" + Math.random().toString(36).substr(2, 5) + \"\\\"\");\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": {{Name}},\r\n  \"description\": {{Description}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers"
+					],
+					"query": [
+						{
+							"key": "page",
+							"value": "2",
+							"disabled": true
+						}
+					]
+				},
+				"description": "Post a writer\r\n"
+			},
+			"response": []
+		},
+		{
+			"name": "GET Test writers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9e3388f2-3c04-4011-a1ee-2ea7ba29f1fa",
+						"exec": [
+							"pm.test(\"Writer was succesfully retrieved\", function () {\r",
+							"    \r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData[0].id).to.eql(pm.collectionVariables.get(\"CurrentWriterId\"))\r",
+							"    console.log(\"Response Id: \" + jsonData[0].id);\r",
+							"\r",
+							"});\r",
+							"\r",
+							"let writerIdArray = pm.collectionVariables.get(\"PostmanWriterIdArray\");\r",
+							"let counter = pm.collectionVariables.get(\"Counter\");\r",
+							"counter--;\r",
+							"pm.collectionVariables.set(\"Counter\", counter);\r",
+							"\r",
+							"\r",
+							"if(counter > 0) {\r",
+							"\r",
+							"    postman.setNextRequest('GET Test writers');\r",
+							"\r",
+							"} else {\r",
+							"    \r",
+							"    console.log(\"This is the ID for the mock writers: \" + pm.variables.get(\"PostmanWriterIdArray\"));\r",
+							"    pm.collectionVariables.set(\"Counter\", writerIdArray.length);\r",
+							"\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "543a4481-642f-4649-b85a-edc2f1f9aa47",
+						"exec": [
+							"let writerIdArray = pm.collectionVariables.get(\"PostmanWriterIdArray\");\r",
+							"let counter = pm.collectionVariables.get(\"Counter\");\r",
+							"let currentIndex = counter - 1;\r",
+							"let currentWriterId = writerIdArray[currentIndex];\r",
+							"pm.collectionVariables.set(\"CurrentWriterId\", currentWriterId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/writers/{{CurrentWriterId}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						"{{CurrentWriterId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE Test writers",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "4feff5bd-4b72-43cc-b399-6a04dbdddfe8",
+						"exec": [
+							"let counter = pm.variables.get(\"Counter\");\r",
+							"let writerArray = pm.variables.get(\"PostmanWriterIdArray\");\r",
+							"let writerToDelete = writerArray[counter - 1];\r",
+							"pm.collectionVariables.set(\"PostmanWriterToDelete\", writerToDelete);\r",
+							"console.log(\"Deleting: \" + pm.variables.get(\"PostmanWriterToDelete\"))\r",
+							"counter--;\r",
+							"pm.collectionVariables.set(\"Counter\", counter);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "466a3eac-1246-4e45-b3bd-569d0e5c828c",
+						"exec": [
+							"let counter = pm.variables.get(\"Counter\");\r",
+							"\r",
+							"pm.test(\"Test for changes: 1\", function () {\r",
+							"    \r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.changes).to.eql(1)\r",
+							"\r",
+							"});\r",
+							"\r",
+							"if(counter > 0) {\r",
+							"\r",
+							"    postman.setNextRequest('DELETE Test writers');\r",
+							"\r",
+							"} else {\r",
+							"\r",
+							"    pm.collectionVariables.set(\"Counter\", 5);\r",
+							"    pm.collectionVariables.set(\"PostmanWriterIdArray\", undefined);\r",
+							"\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/writers/{{PostmanWriterToDelete}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						"{{PostmanWriterToDelete}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "dee3ce98-1307-4e53-95ba-7dfff76ab886",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "4518a48e-0c11-40aa-8563-7733df86b7ea",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "64cbd68c-adaf-4cf6-9cde-f471c2bc9d5e",
+			"key": "MockWriterID",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "34722373-f558-4478-9bef-bfdb49692f12",
+			"key": "PostmanWriterIdArray",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "caf6105b-0eb0-47f6-9088-0c58056c5c35",
+			"key": "PostmanWriterTestId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "6f919e1b-3ad7-4e5e-8a2c-4302a805adf8",
+			"key": "Counter",
+			"value": "5",
+			"type": "string"
+		},
+		{
+			"id": "7406706e-2059-4af6-b171-ca9d923c73de",
+			"key": "PostmanWriterToDelete",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "32b9493f-9576-40b6-93bc-04806475e8fb",
+			"key": "Description",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "e69e1872-0c81-45d8-ba40-25e7c73d07a9",
+			"key": "Name",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"id": "34eaed87-d823-455b-8fc0-f37881ac3729",
+			"key": "CurrentWriterId",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
