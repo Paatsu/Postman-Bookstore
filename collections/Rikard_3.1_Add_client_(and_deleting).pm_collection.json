@@ -335,6 +335,97 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "GET client by id (check deleted client)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "274833c5-17cb-4f4e-8917-b7e1acef8f92",
+						"exec": [
+							"let clientEmail = pm.collectionVariables.get('clientEmail');\r",
+							"let id = pm.environment.get('lastClientID');\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test('Checking response for: ' + clientEmail + ' (id:' + id + ') when GET client', function(){\r",
+							"\r",
+							"    let client = [];\r",
+							"    client = response.filter(x => x.email === clientEmail);\r",
+							"\r",
+							"    pm.expect(client).to.have.lengthOf(0, \r",
+							"    'expected response to not contain deleted client: ' + clientEmail);\r",
+							"    \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/clients/{{lastClientID}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients",
+						"{{lastClientID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET all clients (check deleted client)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bc559914-e2c3-46eb-ab07-984b6247a192",
+						"exec": [
+							"let clientEmail = pm.collectionVariables.get('clientEmail');\r",
+							"let id = pm.environment.get('lastClientID');\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test('Checking response for: ' + clientEmail + ' (id:' + id + ') when GET all clients', function(){\r",
+							"\r",
+							"    let client = [];\r",
+							"    client = response.filter(x => x.email === clientEmail);\r",
+							"\r",
+							"    pm.expect(client).to.have.lengthOf(0, \r",
+							"    'expected response to not contain deleted client: ' + clientEmail);\r",
+							"    \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients"
+					]
+				}
+			},
+			"response": []
 		}
 	],
 	"event": [
@@ -361,7 +452,7 @@
 	],
 	"variable": [
 		{
-			"id": "d6014531-d228-4edf-86ff-677c4f4520d9",
+			"id": "0cd2a572-4a1a-4f7e-90a1-22da383d82cf",
 			"key": "clientEmail",
 			"value": "",
 			"type": "string"
