@@ -6,7 +6,7 @@
 	},
 	"item": [
 		{
-			"name": "Create writers",
+			"name": "Create writer",
 			"event": [
 				{
 					"listen": "prerequest",
@@ -81,7 +81,7 @@
 							"\r",
 							"// Run request again if more mockdata\r",
 							"if(mockData[counter]){\r",
-							"    postman.setNextRequest('Create writers');\r",
+							"    postman.setNextRequest('Create writer');\r",
 							"}\r",
 							"// Otherwise reset the counter\r",
 							"// (for the next request that will reuse the mockdata)\r",
@@ -163,6 +163,12 @@
 							"// Run request again if more mockdata\r",
 							"if(mockData[counter]){\r",
 							"    postman.setNextRequest('Read writer');\r",
+							"}\r",
+							"\r",
+							"// Otherwise reset the counter\r",
+							"// (for the next request that will reuse the mockdata)\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0);\r",
 							"}"
 						],
 						"type": "text/javascript"
@@ -171,6 +177,74 @@
 			],
 			"request": {
 				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/writers/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete writer",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "614faa39-018c-4b29-bfcd-7faf23d9fe7e",
+						"exec": [
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let {id} = mockData[counter];\r",
+							"\r",
+							"// Save to environment variable to use in the request\r",
+							"pm.environment.set('id', id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "f9e20e01-ab0e-44cb-97cd-f63b25349c07",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"// Test number of changed rows\r",
+							"pm.test('one row should be changed', function(){\r",
+							"    pm.expect(response.changes).to.equal(1);\r",
+							"});\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Delete writer');\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
 				"header": [],
 				"url": {
 					"raw": "http://localhost:3000/api/writers/{{id}}",
