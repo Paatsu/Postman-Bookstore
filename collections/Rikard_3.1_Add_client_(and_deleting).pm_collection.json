@@ -1,0 +1,462 @@
+{
+	"info": {
+		"_postman_id": "e2e527f8-f203-46b6-89f8-bac57588126c",
+		"name": "3.1 Adding a client (and deleting)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "POST client",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "ff8fc2c7-a72f-4992-8baf-3f1525645419",
+						"exec": [
+							"let clientEmail = pm.collectionVariables.get('clientEmail');\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test('Checking response when POST clients: ' + clientEmail, function(){\r",
+							"\r",
+							"    pm.expect(response.lastID).to.be.a('number', \r",
+							"    'response is missing assigned lastID');\r",
+							"    \r",
+							"    pm.expect(response.changes).to.eql(1, \r",
+							"    'expected response changes 1');\r",
+							"});\r",
+							"\r",
+							"pm.environment.set('lastClientID', response.lastID);\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "b37615e3-4118-466a-9ce4-66809c3051f5",
+						"exec": [
+							"// Storing testdata for use in body\r",
+							"let clientEmail = 'armstrong@nasa.gov.org';\r",
+							"pm.collectionVariables.set('clientEmail', clientEmail);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{clientEmail}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET client by email",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5f7953eb-a0c9-46c5-aada-8634f3f8442f",
+						"exec": [
+							"let clientEmail = pm.collectionVariables.get('clientEmail');\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test('Checking response when GET client: ' + clientEmail, function(){\r",
+							"\r",
+							"    pm.expect(response.length).to.be.above(0, \r",
+							"    'response did not contain any client');\r",
+							"    \r",
+							"    pm.expect(response[0].email).to.eql(clientEmail, \r",
+							"    'expected response to contain email:' + clientEmail);\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/clients/?email={{clientEmail}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients",
+						""
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "{{clientEmail}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST client  (same client)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "66449422-19d0-4c4a-9a16-43676dc0140c",
+						"exec": [
+							"let clientEmail = pm.collectionVariables.get('clientEmail');\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test('Checking response when POST clients: ' + clientEmail, function(){\r",
+							"\r",
+							"    pm.expect(response.errno).to.eql(19 , \r",
+							"    'response error number should equal 19');\r",
+							"    \r",
+							"    pm.expect(response.code).to.eql('SQLITE_CONSTRAINT', \r",
+							"    'response error code should equal SQLITE_CONSTRAINT');\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "28c041d7-5f95-438b-ba4d-ddcace650528",
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\": \"{{clientEmail}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET all clients (check for client)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c20a4315-dddf-41d7-ac82-b8b3ba1da153",
+						"exec": [
+							"let clientEmail = pm.collectionVariables.get('clientEmail');\r",
+							"let id = pm.environment.get('lastClientID');\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test('Checking response when GET client: ' + clientEmail + ' (id:' + id + ')', function(){\r",
+							"\r",
+							"    let client = [];\r",
+							"    client = response.filter(x => x.email === clientEmail);\r",
+							"\r",
+							"    pm.expect(client).to.have.lengthOf(1, \r",
+							"    'expected response to contain 1 occurance of client: ' + clientEmail);\r",
+							"    \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET client by id (before DELETE)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "5cd18fb0-73ec-439c-80fe-c1355523e240",
+						"exec": [
+							"let clientEmail = pm.collectionVariables.get('clientEmail');\r",
+							"let id = pm.environment.get('lastClientID');\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"if (response.errno) {\r",
+							"    // Probably missing id column in DB then skip trying to DELETE in next step\r",
+							"    postman.setNextRequest(null); \r",
+							"}\r",
+							"else {\r",
+							"    pm.test('Checking response when GET client: ' + clientEmail + ' (id:' + id + ')', function(){\r",
+							"\r",
+							"        pm.expect(response[0].id).to.eql(id, \r",
+							"        'response did not contain client id');\r",
+							"        \r",
+							"        pm.expect(response[0].email).to.eql(clientEmail, \r",
+							"        'expected response to contain email: ' + clientEmail);\r",
+							"        \r",
+							"    });\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/clients/{{lastClientID}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients",
+						"{{lastClientID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DELETE client by id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "3a1fc999-14ff-499c-a6b8-184e26fa1796",
+						"exec": [
+							"let clientEmail = pm.collectionVariables.get('clientEmail');\r",
+							"let id = pm.environment.get('lastClientID')\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"    pm.test('Checking response when DELETE client: ' + clientEmail + ' (id:' + id + ')', function(){\r",
+							"\r",
+							"    pm.expect(response.lastID).to.eql(id, \r",
+							"    'response is missing lastID');\r",
+							"    \r",
+							"    pm.expect(response.changes).to.eql(1, \r",
+							"    'expected response changes 1');\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/clients/{{lastClientID}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients",
+						"{{lastClientID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET client by id (check deleted client)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "274833c5-17cb-4f4e-8917-b7e1acef8f92",
+						"exec": [
+							"let clientEmail = pm.collectionVariables.get('clientEmail');\r",
+							"let id = pm.environment.get('lastClientID');\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test('Checking response for: ' + clientEmail + ' (id:' + id + ') when GET client', function(){\r",
+							"\r",
+							"    let client = [];\r",
+							"    client = response.filter(x => x.email === clientEmail);\r",
+							"\r",
+							"    pm.expect(client).to.have.lengthOf(0, \r",
+							"    'expected response to not contain deleted client: ' + clientEmail);\r",
+							"    \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/clients/{{lastClientID}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients",
+						"{{lastClientID}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET all clients (check deleted client)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bc559914-e2c3-46eb-ab07-984b6247a192",
+						"exec": [
+							"let clientEmail = pm.collectionVariables.get('clientEmail');\r",
+							"let id = pm.environment.get('lastClientID');\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"pm.test('Checking response for: ' + clientEmail + ' (id:' + id + ') when GET all clients', function(){\r",
+							"\r",
+							"    let client = [];\r",
+							"    client = response.filter(x => x.email === clientEmail);\r",
+							"\r",
+							"    pm.expect(client).to.have.lengthOf(0, \r",
+							"    'expected response to not contain deleted client: ' + clientEmail);\r",
+							"    \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "0c8f1796-7fb4-4fe1-863b-6526db7b6246",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "8630e326-55f2-440c-bec2-5c566b199c2b",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "d96d7b77-bcd9-493d-bcca-3902c5bb58d0",
+			"key": "clientEmail",
+			"value": "",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}

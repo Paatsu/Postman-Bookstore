@@ -62,6 +62,50 @@
 			"response": []
 		},
 		{
+			"name": "GET all books inital total",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9f883186-a66e-4d30-87c2-3686001ef408",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let sumTotal = pm.collectionVariables.get('allBooksInitialTotal');\r",
+							"\r",
+							"pm.test('Checking total books in DB', function(){\r",
+							"\r",
+							"    pm.expect(response.length).to.be.above(29, \r",
+							"    'expected default database to contain atleast 30 books');\r",
+							"\r",
+							"});\r",
+							"\r",
+							"// Saving for comparison in later steps\r",
+							"if (sumTotal < 0) {\r",
+							"    pm.collectionVariables.set('allBooksInitialTotal', response.length);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/books",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "POST book",
 			"event": [
 				{
@@ -116,7 +160,53 @@
 			"response": []
 		},
 		{
-			"name": "GET writer id",
+			"name": "GET all books (check for book)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "0af6b352-2390-4846-9af0-94b96a05d376",
+						"exec": [
+							"let sumTotal = pm.collectionVariables.get('allBooksInitialTotal') + pm.info.iteration + 1;\r",
+							"let isbn = pm.iterationData.get('ISBN_nr');\r",
+							"\r",
+							"let response = pm.response.json();\r",
+							"pm.test('Checking total books in DB', function(){\r",
+							"\r",
+							"    pm.expect(response.length).to.eql(sumTotal, \r",
+							"    'expected default database to contain ' + sumTotal +  ' books at this iteration');\r",
+							"\r",
+							"    let book = [];\r",
+							"    book = response.filter(x => x.ISBN_nr === isbn);\r",
+							"\r",
+							"    pm.expect(book).not.to.have.lengthOf(0, \r",
+							"    'expected response to contain writer added in this iteration');\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/books",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"books"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET writer id (by testdata writer property)",
 			"event": [
 				{
 					"listen": "test",
@@ -288,8 +378,9 @@
 							"\r",
 							"pm.test('Checking response when GET booksXwriters by writer id for: '  + title + ' X ' + name, function(){\r",
 							"    \r",
+							"    // Just for the sake of adding a test here. Unrelated to API and endpoint\r",
 							"    for (let res of response) {\r",
-							"        pm.expect(res.book_ISBN_nr).to.be.a('string', \r",
+							"        pm.expect(res.book_ISBN_nr).to.have.lengthOf.above(6, \r",
 							"        'response is missing a books ISBN nr');\r",
 							"    }\r",
 							"\r",
@@ -353,8 +444,14 @@
 	],
 	"variable": [
 		{
-			"id": "6c7319cd-1ad2-40f2-bd27-57aca1918339",
+			"id": "ae593bbc-5f24-495c-91d8-2cd4f3f74377",
 			"key": "collectionLastWriterID",
+			"value": "-1",
+			"type": "string"
+		},
+		{
+			"id": "816a0653-ab73-4f57-90f8-f8bfbf38504f",
+			"key": "allBooksInitialTotal",
 			"value": "-1",
 			"type": "string"
 		}

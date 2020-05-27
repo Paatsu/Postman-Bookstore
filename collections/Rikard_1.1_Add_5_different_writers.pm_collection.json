@@ -170,6 +170,53 @@
 			"response": []
 		},
 		{
+			"name": "GET all writers (check for writer)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "367fd2f6-621f-423b-988f-f402f8b7e118",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"let sumTotal = pm.collectionVariables.get('allWritersInitialTotal') + pm.info.iteration + 1;\r",
+							"let id = pm.environment.get('lastWriterID');\r",
+							"\r",
+							"pm.test('Checking total writers in DB', function(){\r",
+							"\r",
+							"    pm.expect(response.length).to.eql(sumTotal, \r",
+							"    'expected default database to contain ' + sumTotal +  ' writers at this iteration');\r",
+							"\r",
+							"    let writer = [];\r",
+							"    writer = response.filter(x => x.id === id);\r",
+							"\r",
+							"    // Should really equal 1, but name field not set to unique in DB. Only id\r",
+							"    pm.expect(writer).not.to.have.lengthOf(0, \r",
+							"    'expected response to contain writer added in this iteration');\r",
+							"\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:3000/api/writers",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"writers"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "GET writer by id",
 			"event": [
 				{
@@ -268,45 +315,6 @@
 				}
 			},
 			"response": []
-		},
-		{
-			"name": "GET all writers total",
-			"event": [
-				{
-					"listen": "test",
-					"script": {
-						"id": "367fd2f6-621f-423b-988f-f402f8b7e118",
-						"exec": [
-							"let response = pm.response.json();\r",
-							"let sumTotal = pm.collectionVariables.get('allWritersInitialTotal') + pm.info.iteration + 1;\r",
-							"\r",
-							"pm.test('Checking total writers in DB', function(){\r",
-							"\r",
-							"    pm.expect(response.length).to.eql(sumTotal, \r",
-							"    'expected default database to contain ' + sumTotal +  ' writers at this iteration');\r",
-							"\r",
-							"});"
-						],
-						"type": "text/javascript"
-					}
-				}
-			],
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "localhost:3000/api/writers",
-					"host": [
-						"localhost"
-					],
-					"port": "3000",
-					"path": [
-						"api",
-						"writers"
-					]
-				}
-			},
-			"response": []
 		}
 	],
 	"event": [
@@ -333,7 +341,7 @@
 	],
 	"variable": [
 		{
-			"id": "7df6c322-049d-4d69-b1e0-b18a94143bdd",
+			"id": "318755eb-cd61-4dc8-8932-bf362807dc6e",
 			"key": "allWritersInitialTotal",
 			"value": "-1",
 			"type": "string"
