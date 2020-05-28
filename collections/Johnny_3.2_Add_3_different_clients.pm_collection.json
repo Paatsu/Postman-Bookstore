@@ -192,12 +192,13 @@
 							"// Reading/parsing environment variables back to local variables\r",
 							"let counter = pm.environment.get(\"counter\") / 1;\r",
 							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"mockData[counter].email += 'test';\r",
 							"let {id, email} = mockData[counter];\r",
-							"\r",
 							"\r",
 							"// Save to environment variable to use in the request\r",
 							"pm.environment.set('id', id);\r",
-							"pm.environment.set(\"email\", email + 'test');"
+							"pm.environment.set(\"email\", email);\r",
+							"pm.environment.set('mockData', JSON.stringify(mockData));"
 						],
 						"type": "text/javascript"
 					}
@@ -255,6 +256,81 @@
 						}
 					}
 				},
+				"url": {
+					"raw": "http://localhost:3000/api/clients/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Confirm update clients",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "805c07c7-b27d-4ed1-9e22-df8c56577303",
+						"exec": [
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let {id} = mockData[counter];\r",
+							"\r",
+							"// Save to environment variable to use in the request\r",
+							"pm.environment.set('id', id);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "7b104c8c-4992-438d-84b7-5bdc55a33b64",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"//console.log(mockData, response)\r",
+							"\r",
+							"// Compare with the response from the database;\r",
+							"pm.test('data in db should equal previously written mock data', function(){\r",
+							"    pm.expect(response, counter + ' used').to.deep.equal([mockData[counter]]);\r",
+							"});\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Confirm update clients');\r",
+							"}\r",
+							"// Otherwise reset the counter\r",
+							"// (for the next request that will reuse the mockdata)\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
 				"url": {
 					"raw": "http://localhost:3000/api/clients/{{id}}",
 					"protocol": "http",
@@ -351,7 +427,7 @@
 	],
 	"variable": [
 		{
-			"id": "1d22dade-5221-4347-9e83-c0452fa6976c",
+			"id": "63e1a863-0780-4f90-a7f2-43b492de6768",
 			"key": "email",
 			"value": "",
 			"type": "string"
