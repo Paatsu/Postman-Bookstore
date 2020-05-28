@@ -186,7 +186,6 @@
 							"    pm.expect(response.length).to.eql(sumTotal, \r",
 							"    'expected default database to contain ' + sumTotal +  ' writers at this iteration');\r",
 							"\r",
-							"    let writer = [];\r",
 							"    writer = response.filter(x => x.id === id);\r",
 							"\r",
 							"    // Should really equal 1, but name field not set to unique in DB. Only id\r",
@@ -341,7 +340,7 @@
 	],
 	"variable": [
 		{
-			"id": "318755eb-cd61-4dc8-8932-bf362807dc6e",
+			"id": "71f28979-99db-4ad6-9ee8-1675e253a8e7",
 			"key": "allWritersInitialTotal",
 			"value": "-1",
 			"type": "string"
