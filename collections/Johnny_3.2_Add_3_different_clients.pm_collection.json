@@ -182,6 +182,96 @@
 			"response": []
 		},
 		{
+			"name": "Update clients",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "af2583a5-1ae7-4d3b-ad21-37cc1def9537",
+						"exec": [
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"let {id, email} = mockData[counter];\r",
+							"\r",
+							"\r",
+							"// Save to environment variable to use in the request\r",
+							"pm.environment.set('id', id);\r",
+							"pm.environment.set(\"email\", email + 'test');"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "4c7be2af-be33-4fc0-be94-2e61f98ff7ff",
+						"exec": [
+							"// The response\r",
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Reading/parsing environment variables back to local variables\r",
+							"let counter = pm.environment.get(\"counter\") / 1;\r",
+							"let mockData = JSON.parse(pm.environment.get(\"mockData\"));\r",
+							"\r",
+							"// Check status\r",
+							"pm.test(\"check status\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// Test number of changed rows\r",
+							"pm.test('one row should be changed', function(){\r",
+							"    pm.expect(response.changes).to.equal(1);\r",
+							"});\r",
+							"\r",
+							"// Increment the counter and save to environment\r",
+							"counter++;\r",
+							"pm.environment.set('counter', counter);\r",
+							"\r",
+							"// Run request again if more mockdata\r",
+							"if(mockData[counter]){\r",
+							"    postman.setNextRequest('Update clients');\r",
+							"}\r",
+							"\r",
+							"// Otherwise reset the counter\r",
+							"// (for the next request that will reuse the mockdata)\r",
+							"else {\r",
+							"  pm.environment.set(\"counter\", 0);\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"email\":\"{{email}}\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/clients/{{id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients",
+						"{{id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Delete clients",
 			"event": [
 				{
@@ -257,6 +347,14 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"variable": [
+		{
+			"id": "1d22dade-5221-4347-9e83-c0452fa6976c",
+			"key": "email",
+			"value": "",
+			"type": "string"
 		}
 	],
 	"protocolProfileBehavior": {}
