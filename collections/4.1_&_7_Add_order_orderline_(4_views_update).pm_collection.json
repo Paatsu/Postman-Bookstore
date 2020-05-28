@@ -1,0 +1,920 @@
+{
+	"info": {
+		"_postman_id": "00437198-90df-4f4f-bde7-e766ae431f5a",
+		"name": "4.1 & 7 Add order & orderline (4 views update)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "views",
+			"item": [
+				{
+					"name": "GET total amount paid per client",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ed813b98-a607-42c5-89f9-7c43110d5b03",
+								"exec": [
+									"let response = pm.response.json();\r",
+									"pm.test('Checking response for GET \"total amount paid per client\" view', function(){\r",
+									"\r",
+									"    // Precondition. Just to get assertion error\r",
+									"    pm.expect(response.length).to.be.above(19, \r",
+									"    'expected atleast 20 clients with payment history in response');\r",
+									"\r",
+									"});\r",
+									"\r",
+									"pm.environment.set('lastPayHistoryView', response);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/total_amount_paid_per_client",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"total_amount_paid_per_client"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET order details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "20dbb992-5ee2-4728-a17e-625b6f6619c0",
+								"exec": [
+									"let response = pm.response.json();\r",
+									"pm.test('Checking response for GET \"order details\" view', function(){\r",
+									"\r",
+									"    // Precondition. Just to get assertion error\r",
+									"    pm.expect(response.length).to.be.above(40, \r",
+									"    'expected atleast 40 order details in response');\r",
+									"\r",
+									"});\r",
+									"\r",
+									"pm.environment.set('lastOrderDetailsView', response);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/order_details",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"order_details"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET total price per order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0f8b0f84-995f-45b1-85e4-d1b7641c924f",
+								"exec": [
+									"\r",
+									"// Reminder response should eql num of posts in orders table \r",
+									"\r",
+									"let response = pm.response.json();\r",
+									"pm.test('Checking response for GET \"total price per order\" view', function(){\r",
+									"\r",
+									"    // Precondition. Just to get assertion error\r",
+									"    pm.expect(response.length).to.be.above(24, \r",
+									"    'expected atleast 25 orders in response');\r",
+									"\r",
+									"});\r",
+									"\r",
+									"pm.environment.set('lastOrdersPriceView', response);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/total_price_per_order",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"total_price_per_order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET amount of books sold per month",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "0acedf80-78a4-4a18-9848-b165f010e3fa",
+								"exec": [
+									"\r",
+									"let response = pm.response.json();\r",
+									"pm.test('Checking response for GET \"amount of books sold per month\" view', function(){\r",
+									"\r",
+									"    // Precondition. Just to get assertion error\r",
+									"    pm.expect(response.length).to.be.above(10, \r",
+									"    'expected atleast 11 months with sales in response');\r",
+									"\r",
+									"});\r",
+									"\r",
+									"pm.environment.set('lastBooksPerMonthView', response);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/amount_of_books_sold_per_month",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"amount_of_books_sold_per_month"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "order & orderline",
+			"item": [
+				{
+					"name": "GET client (random)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "58fb7374-96c4-4c96-b818-e3758777ecc1",
+								"exec": [
+									"let response = pm.response.json();\r",
+									"pm.test('Checking response for GET all clients', function(){\r",
+									"\r",
+									"    // Just to get assertion error\r",
+									"    pm.expect(response.length).to.be.above(19, \r",
+									"    'expected atleast 20 clients in response to select random client from');\r",
+									"\r",
+									"});\r",
+									"\r",
+									"let idx = Math.floor(Math.random() * response.length);\r",
+									"\r",
+									"// Storing as collection this time for purpose of post-run viewing\r",
+									"pm.collectionVariables.set('clientEmail', response[idx].email);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "29e5eece-b578-4de6-a303-943b68a97e71",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"{{clientEmail}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/clients",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"clients"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET all books",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "f243723b-6eba-461a-a0c4-1e9c9b392ef8",
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"id": "6d8c384b-56fa-4af1-8200-7f85239bf5c5",
+								"exec": [
+									"\r",
+									"let response = pm.response.json();\r",
+									"pm.test('Checking response for GET all books', function(){\r",
+									"\r",
+									"    // Just to get assertion error\r",
+									"    pm.expect(response.length).to.be.above(29, \r",
+									"    'expected atleast 30 books in response to select random book from');\r",
+									"\r",
+									"});\r",
+									"\r",
+									"pm.environment.set('lastAllBooks', response);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/books",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"books"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET all orderlines (choosing book without)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f725a74d-2e59-43fb-96c2-46593431172f",
+								"exec": [
+									"let lastAllBooks = pm.environment.get('lastAllBooks');\r",
+									"\r",
+									"// Choose first preexisting book without orderline\r",
+									"let isbn;\r",
+									"let response = pm.response.json();\r",
+									"for (let book of lastAllBooks) {\r",
+									"    isbn = book.ISBN_nr;\r",
+									"    let orderLineMatches = response.filter(x => x.book_ISBN_nr === isbn);\r",
+									"    if (!orderLineMatches.length) {\r",
+									"        pm.environment.set('lastBookTitle', book.title); \r",
+									"        break; \r",
+									"    }\r",
+									"}\r",
+									"\r",
+									"// Storing as collection this time for purpose of post-run viewing\r",
+									"pm.collectionVariables.set('orderLineISBN', isbn);\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/orderlines",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orderlines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST orderline",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "198c4f3c-9049-48cf-8463-b68083db41e3",
+								"exec": [
+									"let isbn = pm.collectionVariables.get('orderLineISBN');\r",
+									"let title = pm.environment.get('lastBookTitle');\r",
+									"\r",
+									"let response = pm.response.json();\r",
+									"pm.test('Checking response when POST orderline for book: ' + title + ' (ISBN ' + isbn + ')', function(){\r",
+									"\r",
+									"    pm.expect(response.lastID).to.be.a('number', \r",
+									"    'response is missing assigned lastID');\r",
+									"    \r",
+									"    pm.expect(response.changes).to.eql(1, \r",
+									"    'expected response changes 1');\r",
+									"\r",
+									"});\r",
+									"\r",
+									"// Storing as collection this time for purpose of post-run viewing\r",
+									"pm.collectionVariables.set('orderLineID', response.lastID);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"amount\": 300,\n\t\"book_ISBN_nr\": \"{{orderLineISBN}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/orderlines",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orderlines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET check for new orderline",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "9ba9433e-e8f0-47dc-bf7b-d9c24c4bee2b",
+								"exec": [
+									"let id = pm.collectionVariables.get('orderLineID');\r",
+									"let isbn = pm.collectionVariables.get('orderLineISBN');\r",
+									"\r",
+									"let response = pm.response.json();\r",
+									"pm.test('Checking response when GET all orderlines', function(){\r",
+									"\r",
+									"    let orderLine = response.filter(x => x.book_ISBN_nr === isbn && x.id === id && x.amount === 300);\r",
+									"\r",
+									"    pm.expect(orderLine).to.have.lengthOf(1, \r",
+									"    'expected response to contain posted orderline: ' + isbn + ' (id:' + id + ')');\r",
+									"    \r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"amount\": 300,\n\t\"book_ISBN_nr\": \"{{lastBookISBN}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/orderlines",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orderlines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8d6dab6d-09fd-418d-b9bf-aa483872ab5c",
+								"exec": [
+									"let isbn = pm.collectionVariables.get('orderLineISBN');\r",
+									"let title = pm.environment.get('lastBookTitle');\r",
+									"\r",
+									"let response = pm.response.json();\r",
+									"pm.test('Checking response when POST order for book: ' + title + ' (ISBN ' + isbn + ')', function(){\r",
+									"\r",
+									"    pm.expect(response.lastID).to.be.a('number', \r",
+									"    'response is missing assigned lastID');\r",
+									"    \r",
+									"    pm.expect(response.changes).to.eql(1, \r",
+									"    'expected response changes 1');\r",
+									"\r",
+									"});\r",
+									"\r",
+									"// Storing as collection this time for purpose of post-run viewing\r",
+									"pm.collectionVariables.set('orderID', response.lastID);"
+								],
+								"type": "text/javascript"
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"id": "e2d5d6aa-01d4-4349-9571-ab9f5d9d17b6",
+								"exec": [
+									"let today = new Date();\r",
+									"\r",
+									"pm.environment.set('today', today.toISOString());"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"date\": \"{{today}}\",\n\t\"client_email\": \"{{clientEmail}}\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET check for new order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "8d26c547-395d-42a3-a541-7a2aeae63b3d",
+								"exec": [
+									"let id = pm.collectionVariables.get('orderID');\r",
+									"let email = pm.collectionVariables.get('clientEmail');\r",
+									"let today = pm.environment.get('today');\r",
+									"\r",
+									"let response = pm.response.json();\r",
+									"pm.test('Checking response when GET all orders', function(){\r",
+									"\r",
+									"    let order = response.filter(x => x.id === id && x.client_email === email && x.date === today);\r",
+									"\r",
+									"    pm.expect(order).to.have.lengthOf(1, \r",
+									"    'expected response to contain posted order id: ' + id  + ' (' + email + ')');\r",
+									"    \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST orderlinesXorders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "2cf5ba5c-d63d-4dbd-b436-ec864c173643",
+								"exec": [
+									"let isbn = pm.collectionVariables.get('orderLineISBN');\r",
+									"let title = pm.environment.get('lastBookTitle');\r",
+									"\r",
+									"let response = pm.response.json();\r",
+									"pm.test('Checking response when POST orderlinesXorder for book: ' + title + ' (ISBN ' + isbn + ')', function(){\r",
+									"\r",
+									"    pm.expect(response.lastID).to.be.a('number', \r",
+									"    'response is missing assigned lastID');\r",
+									"    \r",
+									"    pm.expect(response.changes).to.eql(1, \r",
+									"    'expected response changes 1');\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"order_line_id\": {{orderLineID}},\n\t\"order_id\": {{orderID}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/orderlinesXorders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orderlinesXorders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET check for new orderlinesXorders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5b77ebc5-f0a7-4922-8080-69cbfa2a8e03",
+								"exec": [
+									"let orderID = pm.collectionVariables.get('orderID');\r",
+									"let lineID = pm.collectionVariables.get('orderLineID');\r",
+									"let email = pm.collectionVariables.get('clientEmail');\r",
+									"\r",
+									"let response = pm.response.json();\r",
+									"pm.test('Checking response when GET all orderlinesXorders', function(){\r",
+									"\r",
+									"    let lineXorder = response.filter(x => x.order_line_id === lineID && x.order_id === orderID);\r",
+									"\r",
+									"    pm.expect(lineXorder).to.have.lengthOf(1, \r",
+									"    'expected response to contain posted orderlinesXorders: ' + lineID  + ' X ' + orderID);\r",
+									"    \r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/orderlinesXorders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orderlinesXorders"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "views update",
+			"item": [
+				{
+					"name": "GET total amount paid per client",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "64bf7b77-63a9-466a-8cb2-63572be98757",
+								"exec": [
+									"let payHistory = pm.environment.get('lastPayHistoryView');\r",
+									"\r",
+									"let response = pm.response.json();\r",
+									"pm.test('Checking response for GET \"total amount paid per client\" view', function(){\r",
+									"\r",
+									"    // Precondition. Just to get assertion error\r",
+									"    pm.expect(payHistory).to.not.eql(undefined, \r",
+									"    'missing response from a previous GET view'); \r",
+									" \r",
+									"    pm.expect(response).to.not.eql(payHistory, \r",
+									"    'view has not been updated');\r",
+									"\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/total_amount_paid_per_client",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"total_amount_paid_per_client"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET order details",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "88941134-4b69-4259-b9f5-87aa31b87e1b",
+								"exec": [
+									"let orderDetails = pm.environment.get('lastOrderDetailsView');\r",
+									"\r",
+									"let response = pm.response.json();\r",
+									"pm.test('Checking response for GET \"order details\" view', function(){\r",
+									"\r",
+									"    // Precondition. Just to get assertion error\r",
+									"    pm.expect(orderDetails).to.not.eql(undefined, \r",
+									"    'missing response from a previous GET view'); \r",
+									" \r",
+									"    pm.expect(response).to.not.eql(orderDetails, \r",
+									"    'view has not been updated');\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/order_details",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"order_details"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET total price per order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "cad238c9-bed2-401d-b77b-bdbf6bbc18c5",
+								"exec": [
+									"\r",
+									"// Reminder response should eql num of posts in orders table \r",
+									"\r",
+									"let orderPrices = pm.environment.get('lastOrdersPriceView');\r",
+									"\r",
+									"let response = pm.response.json();\r",
+									"pm.test('Checking response for GET \"total price per order\" view', function(){\r",
+									"\r",
+									"    // Precondition. Just to get assertion error\r",
+									"    pm.expect(orderPrices).to.not.eql(undefined, \r",
+									"    'missing response from a previous GET view'); \r",
+									" \r",
+									"    pm.expect(response).to.not.eql(orderPrices, \r",
+									"    'view has not been updated');\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/total_price_per_order",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"total_price_per_order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET amount of books sold per month",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "73e31a70-fb4a-4fbd-943a-e8d71fe139a3",
+								"exec": [
+									"let booksPerMonth = pm.environment.get('lastBooksPerMonthView');\r",
+									"\r",
+									"let response = pm.response.json();\r",
+									"pm.test('Checking response for GET \"amount of books sold per month\" view', function(){\r",
+									"\r",
+									"    // Precondition. Just to get assertion error\r",
+									"    pm.expect(booksPerMonth).to.not.eql(undefined, \r",
+									"    'missing response from a previous GET view'); \r",
+									" \r",
+									"    pm.expect(response).to.not.eql(booksPerMonth, \r",
+									"    'view has not been updated');\r",
+									"\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/amount_of_books_sold_per_month",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"amount_of_books_sold_per_month"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "0646419a-b39f-4ed2-b4b6-cac68f8d9705",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "11c5d82f-0cf4-4767-b65f-6fd467fce464",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"id": "624f8a38-bc25-48b1-8859-e15c84799abd",
+			"key": "clientEmail",
+			"value": "-1",
+			"type": "string"
+		},
+		{
+			"id": "c6be9150-b946-4362-a856-34a110e63774",
+			"key": "orderLineISBN",
+			"value": "-1",
+			"type": "string"
+		},
+		{
+			"id": "5cf6e02e-9e20-47bf-918e-ed959b4032ee",
+			"key": "orderLineID",
+			"value": "-1",
+			"type": "string"
+		},
+		{
+			"id": "202e3313-a403-46dd-908b-ace5e6c5fb60",
+			"key": "orderID",
+			"value": "-1",
+			"type": "string"
+		}
+	],
+	"protocolProfileBehavior": {}
+}
