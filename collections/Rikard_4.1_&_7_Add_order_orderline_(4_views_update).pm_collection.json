@@ -9,7 +9,7 @@
 			"name": "views",
 			"item": [
 				{
-					"name": "GET total amount paid per client",
+					"name": "(view) GET total amount paid per client",
 					"event": [
 						{
 							"listen": "test",
@@ -51,7 +51,7 @@
 					"response": []
 				},
 				{
-					"name": "GET order details",
+					"name": "(view) GET order details",
 					"event": [
 						{
 							"listen": "test",
@@ -93,7 +93,7 @@
 					"response": []
 				},
 				{
-					"name": "GET total price per order",
+					"name": "(view) GET total price per order",
 					"event": [
 						{
 							"listen": "test",
@@ -138,7 +138,7 @@
 					"response": []
 				},
 				{
-					"name": "GET amount of books sold per month",
+					"name": "(view)  GET amount of books sold per month",
 					"event": [
 						{
 							"listen": "test",
@@ -187,7 +187,7 @@
 			"name": "order & orderline",
 			"item": [
 				{
-					"name": "GET client (random)",
+					"name": "GET client (random preexisting)",
 					"event": [
 						{
 							"listen": "test",
@@ -323,13 +323,15 @@
 									"    isbn = book.ISBN_nr;\r",
 									"    let orderLineMatches = response.filter(x => x.book_ISBN_nr === isbn);\r",
 									"    if (!orderLineMatches.length) {\r",
-									"        pm.environment.set('lastBookTitle', book.title); \r",
-									"        break; \r",
+									"        pm.environment.set('lastBookTitle', book.title);\r",
+									"        pm.environment.set('lastBookPrice', book.price);         \r",
+									"        // Storing as collection this time for purpose of post-run viewing\r",
+									"        pm.collectionVariables.set('orderLineISBN', isbn);\r",
+									"        break;         \r",
 									"    }\r",
 									"}\r",
 									"\r",
-									"// Storing as collection this time for purpose of post-run viewing\r",
-									"pm.collectionVariables.set('orderLineISBN', isbn);\r",
+									"\r",
 									""
 								],
 								"type": "text/javascript"
@@ -388,7 +390,57 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"amount\": 300,\n\t\"book_ISBN_nr\": \"{{orderLineISBN}}\"\n}",
+							"raw": "{\n\t\"amount\": 999,\n\t\"book_ISBN_nr\": \"{{orderLineISBN}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/orderlines",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"orderlines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(X) POST orderline (missing amount NULL)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c17ba337-8978-4b4b-a31c-a56cf17d8164",
+								"exec": [
+									"let response = pm.response.json();\r",
+									"pm.test('Checking response when POST orderline for non existing book', function(){\r",
+									"\r",
+									"    pm.expect(response.errno).to.eql(19 , \r",
+									"    'response error number should equal 19');\r",
+									"    \r",
+									"    pm.expect(response.code).to.eql('SQLITE_CONSTRAINT', \r",
+									"    'response error code should equal SQLITE_CONSTRAINT');\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"book_ISBN_nr\": \"{{orderLineISBN}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -424,7 +476,7 @@
 									"let response = pm.response.json();\r",
 									"pm.test('Checking response when GET all orderlines', function(){\r",
 									"\r",
-									"    let orderLine = response.filter(x => x.book_ISBN_nr === isbn && x.id === id && x.amount === 300);\r",
+									"    let orderLine = response.filter(x => x.book_ISBN_nr === isbn && x.id === id && x.amount === 999);\r",
 									"\r",
 									"    pm.expect(orderLine).to.have.lengthOf(1, \r",
 									"    'expected response to contain posted orderline: ' + isbn + ' (id:' + id + ')');\r",
@@ -436,21 +488,9 @@
 							}
 						}
 					],
-					"protocolProfileBehavior": {
-						"disableBodyPruning": true
-					},
 					"request": {
 						"method": "GET",
 						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n\t\"amount\": 300,\n\t\"book_ISBN_nr\": \"{{lastBookISBN}}\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
 						"url": {
 							"raw": "http://localhost:3000/api/orderlines",
 							"protocol": "http",
@@ -682,7 +722,7 @@
 			"name": "views update",
 			"item": [
 				{
-					"name": "GET total amount paid per client",
+					"name": "(view) GET total amount paid per client",
 					"event": [
 						{
 							"listen": "test",
@@ -690,6 +730,7 @@
 								"id": "64bf7b77-63a9-466a-8cb2-63572be98757",
 								"exec": [
 									"let payHistory = pm.environment.get('lastPayHistoryView');\r",
+									"let email = pm.collectionVariables.get('clientEmail');\r",
 									"\r",
 									"let response = pm.response.json();\r",
 									"pm.test('Checking response for GET \"total amount paid per client\" view', function(){\r",
@@ -698,9 +739,15 @@
 									"    pm.expect(payHistory).to.not.eql(undefined, \r",
 									"    'missing response from a previous GET view'); \r",
 									" \r",
+									"    // A really shitty expect but still baseline\r",
 									"    pm.expect(response).to.not.eql(payHistory, \r",
-									"    'view has not been updated');\r",
+									"    'view has not changed. Is there testdata from previous run?');\r",
 									"\r",
+									"    let lineXorder = response.filter(x => x.email === email);\r",
+									"\r",
+									"    pm.expect(lineXorder).to.have.lengthOf(1, \r",
+									"    'expected response to contain posted clients email: ' + email);\r",
+									"    \r",
 									"});\r",
 									"\r",
 									""
@@ -728,24 +775,48 @@
 					"response": []
 				},
 				{
-					"name": "GET order details",
+					"name": "(view) GET order details",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"id": "88941134-4b69-4259-b9f5-87aa31b87e1b",
 								"exec": [
+									"let email = pm.collectionVariables.get('clientEmail');\r",
+									"let orderLineID = pm.collectionVariables.get('orderLineID');\r",
+									"let orderLineISBN = pm.collectionVariables.get('orderLineISBN');\r",
+									"let orderID = pm.collectionVariables.get('orderID');\r",
 									"let orderDetails = pm.environment.get('lastOrderDetailsView');\r",
+									"let date = pm.environment.get('today');\r",
+									"let title = pm.environment.get('lastBookTitle');\r",
 									"\r",
 									"let response = pm.response.json();\r",
+									"\r",
 									"pm.test('Checking response for GET \"order details\" view', function(){\r",
 									"\r",
 									"    // Precondition. Just to get assertion error\r",
 									"    pm.expect(orderDetails).to.not.eql(undefined, \r",
 									"    'missing response from a previous GET view'); \r",
 									" \r",
+									"    // A really shitty expect but still baseline\r",
 									"    pm.expect(response).to.not.eql(orderDetails, \r",
-									"    'view has not been updated');\r",
+									"    'view has not changed. Is there testdata from previous run?');\r",
+									"\r",
+									"    // Filtering by most relevant for this collectiontest\r",
+									"    let details = response.filter(x => \r",
+									"    x.orderNumber === orderID &&\r",
+									"    x.orderLineId === orderLineID &&\r",
+									"    x.clientEmail === email &&\r",
+									"    x.book_ISBN_nr === orderLineISBN &&\r",
+									"    x.orderDate === date &&\r",
+									"    x.amountOfthisBookOrderded === 999 && \r",
+									"    x.bookTitle === title);\r",
+									"\r",
+									"    // Looking for atleast 1 occurance. Multiple authors per book? This view is flawed!\r",
+									"    pm.expect(details).to.have.lengthOf.above(0, \r",
+									"    'expected response to contain atleast one occurance of POSTED order');\r",
+									"\r",
+									"    pm.expect(true, 'Reminder: \"order details view\" is flawed and missing GROUP BY o.id').to.be.false;\r",
 									"\r",
 									"});"
 								],
@@ -772,7 +843,86 @@
 					"response": []
 				},
 				{
-					"name": "GET total price per order",
+					"name": "(view) GET order details by orderline id and order id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "d929e729-d57f-48fb-99d3-621f82dd352b",
+								"exec": [
+									"let email = pm.collectionVariables.get('clientEmail');\r",
+									"let orderLineID = pm.collectionVariables.get('orderLineID');\r",
+									"let orderLineISBN = pm.collectionVariables.get('orderLineISBN');\r",
+									"let orderID = pm.collectionVariables.get('orderID');\r",
+									"let orderDetails = pm.environment.get('lastOrderDetailsView');\r",
+									"let date = pm.environment.get('today');\r",
+									"let title = pm.environment.get('lastBookTitle');\r",
+									"\r",
+									"let response = pm.response.json();\r",
+									"\r",
+									"pm.test('Checking response for GET \"order details\" view', function(){\r",
+									"\r",
+									"    // Precondition. Just to get assertion error\r",
+									"    pm.expect(orderDetails).to.not.eql(undefined, \r",
+									"    'missing response from a previous GET view'); \r",
+									" \r",
+									"    // A really shitty expect but still baseline\r",
+									"    pm.expect(response).to.not.eql(orderDetails, \r",
+									"    'view has not changed. Is there testdata from previous run?');\r",
+									"\r",
+									"    // Filtering by most relevant for this collectiontest\r",
+									"    let details = response.filter(x => \r",
+									"    x.orderNumber === orderID &&\r",
+									"    x.orderLineId === orderLineID &&\r",
+									"    x.clientEmail === email &&\r",
+									"    x.book_ISBN_nr === orderLineISBN &&\r",
+									"    x.orderDate === date &&\r",
+									"    x.amountOfthisBookOrderded === 999 && \r",
+									"    x.bookTitle === title);\r",
+									"\r",
+									"    // Looking for atleast 1 occurance. Multiple authors per book? This view is flawed!\r",
+									"    pm.expect(details).to.have.lengthOf.above(0, \r",
+									"    'expected response to contain atleast one occurance of POSTED order');\r",
+									"\r",
+									"    pm.expect(true, 'Reminder: \"order details view\" is flawed and missing GROUP BY o.id').to.be.false;\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/order_details/?orderLineId={{orderLineID}}&orderNumber={{orderID}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"order_details",
+								""
+							],
+							"query": [
+								{
+									"key": "orderLineId",
+									"value": "{{orderLineID}}"
+								},
+								{
+									"key": "orderNumber",
+									"value": "{{orderID}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(view) GET total price per order",
 					"event": [
 						{
 							"listen": "test",
@@ -782,7 +932,10 @@
 									"\r",
 									"// Reminder response should eql num of posts in orders table \r",
 									"\r",
+									"let email = pm.collectionVariables.get('clientEmail');\r",
+									"let orderID = pm.collectionVariables.get('orderID');\r",
 									"let orderPrices = pm.environment.get('lastOrdersPriceView');\r",
+									"let bookPrice = pm.environment.get('lastBookPrice');\r",
 									"\r",
 									"let response = pm.response.json();\r",
 									"pm.test('Checking response for GET \"total price per order\" view', function(){\r",
@@ -791,8 +944,17 @@
 									"    pm.expect(orderPrices).to.not.eql(undefined, \r",
 									"    'missing response from a previous GET view'); \r",
 									" \r",
+									"    // A really shitty expect but still baseline\r",
 									"    pm.expect(response).to.not.eql(orderPrices, \r",
-									"    'view has not been updated');\r",
+									"    'view has not changed');\r",
+									"\r",
+									"    let order = response.filter(x => x.orderNumber === orderID && x.client_email === email);\r",
+									"\r",
+									"    pm.expect(order).to.have.lengthOf(1, \r",
+									"    'expected response to contain posted order id: ' + orderID);\r",
+									"\r",
+									"    pm.expect(order[0].totalPrice).to.eql(999 * bookPrice, \r",
+									"    'order price is wrong');\r",
 									"\r",
 									"});\r",
 									""
@@ -820,7 +982,7 @@
 					"response": []
 				},
 				{
-					"name": "GET amount of books sold per month",
+					"name": "(view) GET amount of books sold per month",
 					"event": [
 						{
 							"listen": "test",
@@ -836,8 +998,9 @@
 									"    pm.expect(booksPerMonth).to.not.eql(undefined, \r",
 									"    'missing response from a previous GET view'); \r",
 									" \r",
+									"    // A really shitty expect but still baseline\r",
 									"    pm.expect(response).to.not.eql(booksPerMonth, \r",
-									"    'view has not been updated');\r",
+									"    'view has not changed');\r",
 									"\r",
 									"});\r",
 									""
@@ -892,25 +1055,25 @@
 	],
 	"variable": [
 		{
-			"id": "624f8a38-bc25-48b1-8859-e15c84799abd",
+			"id": "613d57ec-007c-4939-8ab3-067dcd9bdc78",
 			"key": "clientEmail",
 			"value": "-1",
 			"type": "string"
 		},
 		{
-			"id": "c6be9150-b946-4362-a856-34a110e63774",
+			"id": "1b9191a5-4dae-4d9a-8348-77a9a03f29d4",
 			"key": "orderLineISBN",
 			"value": "-1",
 			"type": "string"
 		},
 		{
-			"id": "5cf6e02e-9e20-47bf-918e-ed959b4032ee",
+			"id": "4bd35404-f0c2-411f-b470-8712a2598c9e",
 			"key": "orderLineID",
 			"value": "-1",
 			"type": "string"
 		},
 		{
-			"id": "202e3313-a403-46dd-908b-ace5e6c5fb60",
+			"id": "23e736be-05cf-4cce-9819-5147a59dffc3",
 			"key": "orderID",
 			"value": "-1",
 			"type": "string"

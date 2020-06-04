@@ -180,6 +180,8 @@
 							"let response = pm.response.json();\r",
 							"let sumTotal = pm.collectionVariables.get('allWritersInitialTotal') + pm.info.iteration + 1;\r",
 							"let id = pm.environment.get('lastWriterID');\r",
+							"let description = pm.iterationData.get('description');\r",
+							"let name = pm.iterationData.get('name');\r",
 							"\r",
 							"pm.test('Checking total writers in DB', function(){\r",
 							"\r",
@@ -190,7 +192,13 @@
 							"\r",
 							"    // Should really equal 1, but name field not set to unique in DB. Only id\r",
 							"    pm.expect(writer).not.to.have.lengthOf(0, \r",
-							"    'expected response to contain writer added in this iteration');\r",
+							"    'expected response to contain the writer id:' + id + ' added in this iteration');\r",
+							"\r",
+							"    pm.expect(writer[0].description).to.eql(description, \r",
+							"    'posted writer id:' + id + ' \"description\" mismatch');\r",
+							"\r",
+							"    pm.expect(writer[0].name).to.eql(name, \r",
+							"    'posted writer id:' + id + ' \"name\" mismatch');\r",
 							"\r",
 							"});"
 						],
@@ -340,7 +348,7 @@
 	],
 	"variable": [
 		{
-			"id": "71f28979-99db-4ad6-9ee8-1675e253a8e7",
+			"id": "0e592b0f-8928-4719-8a83-aae5086ab059",
 			"key": "allWritersInitialTotal",
 			"value": "-1",
 			"type": "string"

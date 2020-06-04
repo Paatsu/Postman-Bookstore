@@ -71,7 +71,7 @@
 			"name": "view",
 			"item": [
 				{
-					"name": "GET books and writers",
+					"name": "(view) GET books and writers",
 					"event": [
 						{
 							"listen": "test",
@@ -262,7 +262,7 @@
 					"response": []
 				},
 				{
-					"name": "GET writer id (by testdata writer property)",
+					"name": "GET writer id by book writer (testdata custom property)",
 					"event": [
 						{
 							"listen": "test",
@@ -277,7 +277,7 @@
 									"    pm.expect(response[0].id).to.be.a('number', \r",
 									"    'response id not found for name:' + writer);\r",
 									"\r",
-									"    // Getting an array! Table \"writers\" column \"name\" should be set unique but it is not!\r",
+									"    // Getting an array? Table \"writers\" column \"name\" should be set unique but it is not...\r",
 									"});\r",
 									"\r",
 									"pm.environment.set('lastWriterID', response[0].id);\r",
@@ -345,6 +345,104 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n\t\"writer_id\": {{lastWriterID}},\n\t\"book_ISBN_nr\": \"{{ISBN_nr}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/booksXwriters",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"booksXwriters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(X) POST booksXwriters (invalid ISBN)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6ee64600-3098-4d7e-b58a-cb9f75fc15ef",
+								"exec": [
+									"let response = pm.response.json();\r",
+									"pm.test('Checking response when POST booksXwriters for non existing book', function(){\r",
+									"\r",
+									"    pm.expect(response.errno).to.eql(19 , \r",
+									"    'response error number should equal 19');\r",
+									"    \r",
+									"    pm.expect(response.code).to.eql('SQLITE_CONSTRAINT', \r",
+									"    'response error code should equal SQLITE_CONSTRAINT');\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"writer_id\": {{lastWriterID}},\n\t\"book_ISBN_nr\": \"238096560-5\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:3000/api/booksXwriters",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"booksXwriters"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(X) POST booksXwriters (invalid writer)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c9d9cf64-5fe8-4b40-a699-073c927c7b86",
+								"exec": [
+									"let response = pm.response.json();\r",
+									"pm.test('Checking response when POST booksXwriters for non existing writer', function(){\r",
+									"\r",
+									"    pm.expect(response.errno).to.eql(19 , \r",
+									"    'response error number should equal 19');\r",
+									"    \r",
+									"    pm.expect(response.code).to.eql('SQLITE_CONSTRAINT', \r",
+									"    'response error code should equal SQLITE_CONSTRAINT');\r",
+									"\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"writer_id\": 999,\n\t\"book_ISBN_nr\": \"{{ISBN_nr}}\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -481,7 +579,7 @@
 			"name": "view update",
 			"item": [
 				{
-					"name": "GET books and writers",
+					"name": "(view) GET books and writers",
 					"event": [
 						{
 							"listen": "test",
@@ -497,8 +595,9 @@
 									"    pm.expect(booksWriters).to.not.eql(undefined, \r",
 									"    'missing response from a previous GET view'); \r",
 									" \r",
+									"    // A really shitty expect but still baseline\r",
 									"    pm.expect(response).to.not.eql(booksWriters, \r",
-									"    'view has not been updated');\r",
+									"    'view has not changed');\r",
 									"\r",
 									"});\r",
 									"\r",
@@ -554,13 +653,13 @@
 	],
 	"variable": [
 		{
-			"id": "22b31cb9-b1e0-41fa-b221-617a0a17da54",
+			"id": "4a4722f1-7d3a-4a36-8e1c-8b8dee8b1bcc",
 			"key": "collectionLastWriterID",
 			"value": "-1",
 			"type": "string"
 		},
 		{
-			"id": "cd4a0812-af54-43d0-89ee-d852a2d8a8ba",
+			"id": "aa890b8f-6932-44e5-be9b-d272e679be95",
 			"key": "allBooksInitialTotal",
 			"value": "-1",
 			"type": "string"

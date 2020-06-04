@@ -134,7 +134,7 @@
 			"response": []
 		},
 		{
-			"name": "POST client  (same client)",
+			"name": "(X) POST client  (same client)",
 			"event": [
 				{
 					"listen": "test",
@@ -144,7 +144,7 @@
 							"let clientEmail = pm.collectionVariables.get('clientEmail');\r",
 							"let response = pm.response.json();\r",
 							"\r",
-							"pm.test('Checking response when POST clients: ' + clientEmail, function(){\r",
+							"pm.test('Checking response when POST client: ' + clientEmail, function(){\r",
 							"\r",
 							"    pm.expect(response.errno).to.eql(19 , \r",
 							"    'response error number should equal 19');\r",
@@ -240,6 +240,50 @@
 			"response": []
 		},
 		{
+			"name": "(try) GET all clients (check if id column)",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f5c55a96-0176-48f9-8d24-4fea3658fa3b",
+						"exec": [
+							"let response = pm.response.json();\r",
+							"\r",
+							"// Incase missing id column in DB then skip trying to DELETE in next step\r",
+							"if (!response[0].hasOwnProperty('id')) {\r",
+							"    postman.setNextRequest(null); \r",
+							"}\r",
+							"\r",
+							"pm.test('Checking response for id\\'s when GET clients', function(){\r",
+							"\r",
+							"    pm.expect(response[0].hasOwnProperty('id'), 'response did not contain client id (DB table might not have id column)').to.be.true;\r",
+							"    \r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/api/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "GET client by id (before DELETE)",
 			"event": [
 				{
@@ -249,23 +293,19 @@
 						"exec": [
 							"let clientEmail = pm.collectionVariables.get('clientEmail');\r",
 							"let id = pm.environment.get('lastClientID');\r",
+							"\r",
 							"let response = pm.response.json();\r",
+							"pm.test('Checking response when GET client: ' + clientEmail + ' (id:' + id + ')', function(){\r",
 							"\r",
-							"if (response.errno) {\r",
-							"    // Probably missing id column in DB then skip trying to DELETE in next step\r",
-							"    postman.setNextRequest(null); \r",
-							"}\r",
-							"else {\r",
-							"    pm.test('Checking response when GET client: ' + clientEmail + ' (id:' + id + ')', function(){\r",
+							"    pm.expect(id).to.eql(response[0].id, \r",
+							"    'response did not contain client id (DB table might not have id column)');\r",
+							"    \r",
+							"    pm.expect(response[0].email).to.eql(clientEmail, \r",
+							"    'expected response to contain email: ' + clientEmail);\r",
+							"    \r",
+							"});\r",
 							"\r",
-							"        pm.expect(response[0].id).to.eql(id, \r",
-							"        'response did not contain client id');\r",
-							"        \r",
-							"        pm.expect(response[0].email).to.eql(clientEmail, \r",
-							"        'expected response to contain email: ' + clientEmail);\r",
-							"        \r",
-							"    });\r",
-							"}"
+							""
 						],
 						"type": "text/javascript"
 					}
@@ -449,7 +489,7 @@
 	],
 	"variable": [
 		{
-			"id": "78be9970-655f-4ce2-848e-652359b3b3e0",
+			"id": "2f43aa2f-a4a1-4b8d-9a34-81b478ffac5e",
 			"key": "clientEmail",
 			"value": "",
 			"type": "string"
